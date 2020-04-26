@@ -44,7 +44,6 @@ export default {
         },
         async getRecommend(){
             this.recommendList = await this.axios.get('/api/goods/recommend?type=1');
-            console.log(this.recommendList)
         }
     },
 }
