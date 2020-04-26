@@ -1,0 +1,14 @@
+@mixin layout-flex($dirction:row,$justify:center,$align:center) {
+    display:flex;
+    flex-direction:$dirction;
+    justify-content:$justify;
+    align-items:$align;
+}
+@mixin container-layout($height){
+    width:100%;
+    height:$height;
+    padding:.2rem;
+    box-sizing:border-box;
+    margin-top:.2rem;
+    background-color: #fff;
+}
