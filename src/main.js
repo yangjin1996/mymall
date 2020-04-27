@@ -1,6 +1,7 @@
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import VueLazyload from "vue-lazyload"
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
@@ -9,6 +10,10 @@ axios.defaults.baseURL = 'http://www.2yue.cc/index.php';
 axios.defaults.timeout = 8000;
 axios.defaults.headers.appkey = 'f68bSYqte0m6EibwhARrzTcYDPoV0FobCi06uDfM3eF4QGQQKSywmd71ytM';
 Vue.use(VueAxios,axios);
+//图片懒加载
+Vue.use(VueLazyload,{
+  loading:'/images/loading-svg/loading-bars.svg'
+})
 Vue.config.productionTip = false;
 /*对请求的数据进行处理，use里有两个参数，分别是成功和失败时执行的函数，
  axios网址：https://www.npmjs.com/package/axios */
