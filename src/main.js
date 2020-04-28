@@ -12,7 +12,7 @@ axios.defaults.headers.appkey = 'f68bSYqte0m6EibwhARrzTcYDPoV0FobCi06uDfM3eF4QGQ
 Vue.use(VueAxios,axios);
 //图片懒加载
 Vue.use(VueLazyload,{
-  loading:'/images/loading-svg/loading-bars.svg'
+  loading:'/images/loading-svg/loading-bubbles.svg'
 })
 Vue.config.productionTip = false;
 /*对请求的数据进行处理，use里有两个参数，分别是成功和失败时执行的函数，

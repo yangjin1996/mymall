@@ -1,5 +1,5 @@
 <template>
-    <div class="page">
+    <div class="page" ref="page">
         <common-header></common-header>
         <search-bar></search-bar>
         <home-swiper :swiperList="swiperList"></home-swiper>
@@ -7,12 +7,19 @@
         <recommend :recommendList="recommendList"></recommend>
         <sales :salesList="salesList"></sales>
         <new-goods :newGoodsList="newGoodsList"></new-goods>
-        <goods-list :goodsList="recommendList"></goods-list>
+        <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="scrollDistance">
+            <goods-list :goodsList="goodsList"></goods-list>
+        </div>
+        <common-footer ref="footer"></common-footer>
+        <loading :show="showLoading"></loading>
     </div>
 </template>
 
 <script>
+import infiniteScroll from 'vue-infinite-scroll'
 import CommonHeader from '@/components/Header'
+import Loading from '@/components/Loading'
+import CommonFooter from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
 import HomeSwiper from './Swiper'
 import IconNav from './IconNav'
@@ -20,8 +27,11 @@ import Recommend from './Recommend'
 import Sales from './Sales'
 import NewGoods from './NewGoods'
 import GoodsList from './GoodsList'
+import { Storage } from '@/utils/storage'
 export default {
+    directives: {infiniteScroll},
     components:{
+        Loading,
         CommonHeader,
         SearchBar,
         HomeSwiper,
@@ -29,7 +39,8 @@ export default {
         Recommend,
         Sales,
         NewGoods,
-        GoodsList
+        GoodsList,
+        CommonFooter
     },
     data(){
         return{
@@ -42,23 +53,44 @@ export default {
             page:1,//为你推荐的页码
             count:8, //为你推荐每次获取的数量
             totalPage:0,//为你推荐的总页数
+            busy:false,
+            scrollDistance:0,
+            showLoading:false,
         }
     },
-    mounted() {
-        this.getSwiper();
-        this.getIconNav();
-        this.getRecommend();
-        this.getSales();
-        this.getNewGoods();
-        this.getGoodsList();
+    async mounted() {
+        const footerHeight = document.querySelector(".footer-container").offsetHeight
+        this.$refs.page.style.paddingBottom = footerHeight + 'px'
+        this.scrollDistance = footerHeight
+        this.showLoading = true
+        await this.getSwiper()
+        await this.getIconNav()
+        await this.getRecommend()
+        await this.getSales()
+        await this.getNewGoods()
+        this.showLoading = false
     },
     methods: {
         async getSwiper () {
-            const res = await this.axios.get('/api/swiper?type=1')
-            this.swiperList = res.map(item => item.img)
+            const swiper = Storage.getItem('swiper')
+            if(swiper){
+                this.swiperList = swiper
+            }else{
+                const res = await this.axios.get('/api/swiper?type=1')
+                const swiperList = res.map(item => item.img)
+                this.swiperList = swiperList
+                Storage.setItem('swiper',swiperList)
+            }
         },
         async getIconNav(){
-            this.navList = await this.axios.get('/api/navigate?type=1');
+            const navList = Storage.getItem('navList')
+            if(navList){
+                this.navList = navList
+            }else{
+                const navList = await this.axios.get('/api/navigate?type=1');
+                this.navList = navList
+                Storage.setItem('navList',navList)
+            }
         },
         async getRecommend(){
             this.recommendList = await this.axios.get('/api/goods/recommend?type=1');
@@ -76,12 +108,19 @@ export default {
                     count:this.count
                 }
             });
-            console.log(goods,total,this.goodsList)
             this.goodsList = this.goodsList.concat(goods)
             if(this.page === 1){
                 this.totalPage = Math.ceil(total / this.count)
             }
+            this.page++
         },
+        async loadMore(){
+            this.busy = true
+            if(this.page <= this.totalPage || this.totalPage === 0){
+                await this.getGoodsList()
+                this.busy = false
+            }
+        }
     },
 }
 </script>

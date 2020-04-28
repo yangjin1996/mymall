@@ -19,7 +19,8 @@ export default {
     },
     methods: {
         toBack(){
-
+            // history.back()
+            this.$router.back()
         }
     },
 }
