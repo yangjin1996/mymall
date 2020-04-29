@@ -1,6 +1,6 @@
 <template>
     <div class="head">
-        <span class="iconfont" v-if="back" @click="toBack">&#xe6b3;</span>
+        <span class="iconfont" v-if="showBack" @click="toBack">&#xe6b3;</span>
         <p class="title">{{title}}</p>
     </div>
 </template>
@@ -13,16 +13,24 @@ export default {
             default:'QianQian左右鞋包'
         },
         back:{
-            type:Boolean,
-            default:false
+            type:String,
+            default:''
+        }
+    },
+    computed:{
+        showBack(){
+            return this.back !== ''
         }
     },
     methods: {
         toBack(){
-            // history.back()
-            this.$router.back()
+            if(this.back === ''){
+                this.$router.push('/')
+            }else{
+                this.$router.push(this.back)
+            }
         }
-    },
+    }
 }
 </script>
 
