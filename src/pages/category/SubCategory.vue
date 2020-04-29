@@ -1,6 +1,6 @@
 <template>
 <div class="sub-category-container">
-  <router-link tag="div" :to="'/goods-list/' + item.cat_id" class="sub-category-item" v-for="item of content" :key="item.cat_id">
+  <router-link tag="div" :to="{name:'GoodsList',params:{cid:item.cat_id},query:{cname:item.cat_name}}" class="sub-category-item" v-for="item of content" :key="item.cat_id">
     <img :src="item.img" alt="">
     <span>{{item.cat_name}}</span>
   </router-link>

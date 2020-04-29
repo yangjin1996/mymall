@@ -15,4 +15,7 @@
 @import "./assets/scss/reset";
 @import "./assets/scss/border";
 @import "../fonts/iconfont.css";
+#app{
+    margin-top:1.78rem;
+}
 </style>

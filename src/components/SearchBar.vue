@@ -27,6 +27,12 @@ export default {
 	display: flex;
 	justify-content: center;
     align-items: center;
+    width:100%;
+    position: fixed;
+    top:.9rem;
+    left:0;
+    z-index:999;
+    box-sizing:border-box;
     .internal{
         height:0.58rem;
         width:100%;

@@ -21,11 +21,16 @@ const routes = [
     path: "/goods-list/:cid",
     name: "GoodsList",
     props:route => {
-      console.log(route)
-      return{
-        cid:100
+      let cid = route.params.cid || 0
+      const cname = route.query.cname || ''
+      if(isNaN(cid)){
+        cid = 0
       }
-    }
+      return {
+        cid : parseInt(cid),
+        cname
+      }
+    },
     component: GoodsList
   },
 ];

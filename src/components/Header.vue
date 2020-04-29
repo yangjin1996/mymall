@@ -45,7 +45,10 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: $color-a;
-    position: relative;
+    position: fixed;
+    top:0;
+    left:0;
+    z-index:999;
     span{
         font-size: 0.36rem;
         position: absolute;
