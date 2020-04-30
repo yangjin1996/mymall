@@ -21,7 +21,7 @@ export default {
 <style lang="scss" scoped>
 @import "~@/assets/scss/global";
 .search{
-	height:0.88rem;
+	height:$search-h;
 	background-color:#ff5e46;
 	padding:0 0.4rem;
 	display: flex;
@@ -29,7 +29,7 @@ export default {
     align-items: center;
     width:100%;
     position: fixed;
-    top:.9rem;
+    top:$header-h;
     left:0;
     z-index:999;
     box-sizing:border-box;

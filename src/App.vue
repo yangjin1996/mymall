@@ -14,8 +14,9 @@
 <style lang="scss">
 @import "./assets/scss/reset";
 @import "./assets/scss/border";
+@import "./assets/scss/global";
 @import "../fonts/iconfont.css";
 #app{
-    margin-top:1.78rem;
+    margin-top:$page-margin-top;
 }
 </style>

@@ -38,7 +38,7 @@ export default {
 @import "~@/assets/scss/global";
 .head{
     width:100%;
-    height:0.9rem;
+    height:$header-h;
     color:#fff;
     font-size: 0.36rem;
     display: flex;
