@@ -18,10 +18,10 @@ const routes = [
     component: Category
   },
   {
-    path: "/goods-list/:cid",
+    path: "/goods-list",
     name: "GoodsList",
     props:route => {
-      let cid = route.params.cid || 0
+      let cid = route.query.cid || 0
       const cname = route.query.cname || ''
       if(isNaN(cid)){
         cid = 0

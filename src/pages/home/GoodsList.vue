@@ -7,6 +7,7 @@
                 <div class="goods-info">
                     <div class="goods-name">{{item.name}}</div>
                     <div class="goods-price">￥{{item.price|formatPrice}}</div>
+                    <cart-btn font-size=".32rem" :goods="item"></cart-btn>
                 </div>
             </div>
         </div>
@@ -17,12 +18,14 @@
 <script>
 import Container from './Container'
 import { filters } from '@/utils/mixins'
+import CartBtn from '@/components/CartBtn'
 export default {
     props:{
         goodsList:Array
     },
     components:{
-        Container
+        Container,
+        CartBtn
     },
     mixins:[filters],
 }
@@ -38,6 +41,7 @@ export default {
         width:3.35rem;
         height:4rem;
         margin-right:.2rem;
+        margin-bottom:.2rem;
         border-radius:.1rem;
         overflow:hidden;
         @include layout-flex(column);

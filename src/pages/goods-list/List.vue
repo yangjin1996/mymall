@@ -11,7 +11,7 @@
             <p class="secondContainer">{{item.sale_num}}人购买<span>529浏览</span></p>
         </div>
     </div>
-    <div class="buy iconfont">&#xe601;</div>
+    <cart-btn :goods="item"></cart-btn>
     <!-- <div class="buy iconfont">&#xe601;<p class="goodsNumber">{{goodsNum}}</p></div> -->
   </div>
 </div>
@@ -19,11 +19,15 @@
 
 <script>
 import {filters} from '@/utils/mixins'
+import CartBtn from '@/components/CartBtn'
 export default {
   props:{
     list:Array
   },
-  mixins:[filters]
+  mixins:[filters],
+  components:{
+    CartBtn
+  }
 }
 </script>
 <style lang='scss' scoped>
@@ -60,17 +64,6 @@ export default {
           font-weight: 550;
           line-height: .34rem;
         }
-      }
-      .buy{
-        width:.5rem;
-        height:.5rem;
-        color: #ff5e46;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        right:0;
-        bottom: .2rem;
       }
     }
 }
