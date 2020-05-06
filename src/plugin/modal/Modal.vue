@@ -5,8 +5,8 @@
                 <div class="modal-title" v-if="title !== ''">{{title}}</div>
                 <div class="modal-content" v-if="content !== ''">{{content}}</div>
                 <div class="modal-btn">
-                    <div @click="cancelModal">{{btn.cancel}}</div>
-                    <div @click="confirmModal">{{btn.confirm}}</div>
+                    <div @click="cancelModal">{{btn[1]}}</div>
+                    <div @click="confirmModal">{{btn[0]}}</div>
                 </div>
             </div>
         </div>
@@ -17,13 +17,28 @@
 export default {
     data(){
         return {
-            visible:true,
+            visible:false,
             title:'',
             content:'',
-            btn:{
-                confirm:'确定',
-                cancel:'取消'
+            btn:['确定','取消']
+        }
+    },
+    methods:{
+        cancelModal(){
+            this.visible = false
+            const result = {
+                confirm:false,
+                cancel:true
             }
+            this.$emit('modal',result)
+        },
+        confirmModal(){
+            this.visible = false
+            const result = {
+                confirm:true,
+                cancel:false
+            }
+            this.$emit('modal',result)
         }
     }
 }
