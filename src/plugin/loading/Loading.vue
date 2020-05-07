@@ -29,7 +29,7 @@ export default {
     .mask{
        width:100%;
         height:100%;
-        background-color: rgba($color: #000000, $alpha: .2);
+        background-color: rgba($color: #000000, $alpha: .1);
         position: absolute;
         left:0;
         bottom: 0; 

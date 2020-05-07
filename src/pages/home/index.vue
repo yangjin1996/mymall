@@ -126,5 +126,8 @@ export default {
     width:100%;
     min-height:100%;
     background-color:$color-c;
+    .swiper-container-ios{
+        margin-top:$page-margin-top;
+    }
 }
 </style>

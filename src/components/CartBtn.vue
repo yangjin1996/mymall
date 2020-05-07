@@ -51,6 +51,7 @@ export default {
                     selected,
                     buyNumber:this.buyNumber + buyNumber
                 }
+                // console.log(buyNumber,this.buyNumber);
             }
             Storage.setItem('cart',cart)
             this.$showModal({

@@ -2,15 +2,15 @@
 <div class="page">
   <common-header title="购物车"></common-header>
   <div class="cart-list">
-    <div v-for="item of cart" :key="item.id" class="cart-item border-bottom" @touchstart="touchStart" @touchend="touchEnd">
-      <input type="checkbox" class="checkbox" :checked="item.delected" onclick="toggleSelect(${item.id})">
+    <div v-for="item of cart" :key="item.id" :class="{'cart-delete':item.delete}" class="cart-item border-bottom" :data-goods-id="item.id" @touchstart="touchStart" @touchend="touchEnd">
+      <input type="checkbox" class="checkbox" :checked="item.selected" @click="toggleSelect(item.id)">
       <img class="goods-img" :src="item.img">
       <div class="goods-desc">
         <div class="goods-name">{{item.name}}</div>
         <div class="goods-price">
           <span>￥{{item.price}}</span>
           <div class="goods-number-wrapper">
-            <span class="opra iconfont" :class="{disabled:item.number===1}" @click="reduceCart(item.id)">-</span>
+            <span class="opra iconfont" :class="{disabled:item.buyNumber===1}" @click="reduceCart(item.id)">-</span>
             <span class="number">{{item.buyNumber}}</span>
             <span class="opra iconfont" @click="addCart(item.id)">+</span>
           </div>
@@ -18,6 +18,16 @@
       </div>
       <div class="delete" @click="deleteCart(item.id)">删除</div>
     </div>
+  </div>
+  <div class="cart-count border-top">
+    <div>
+      <input type="checkbox" class="checkbox" :checked="selectAll" @click="toggleSelectAll">
+      全选
+    </div>
+    <div class="total">
+      合计：<em>￥{{total.toFixed(2)}}</em>
+    </div>
+    <div class="submit" onclick="submitCart()">结算({{cartNum}})</div>
   </div>
   <common-footer ref="footer"></common-footer>
 </div>
@@ -35,32 +45,100 @@ export default {
   },
   data(){
     return {
-      cart:[]
+      cart:[],
+      selectAll:true,
+      total:0,
+      cartNum:0
     }
   },
   mounted(){
-    this.cart = Storage.getItem('cart') || []
+    const cart = Storage.getItem('cart') || []
+    if(cart.length > 0){
+      this.cart = cart.map(item => {
+        if(!Reflect.has(item,'delete')){
+          item.delete = false
+        }
+        return item
+      })
+    }
+    this.countCart()
   },
   methods:{
+    countCart(){
+      let selectAll = []
+      let total = 0
+      let cartNum = 0
+      this.cart.forEach(item => {
+        if(item.selected){
+          total += item.price * item.buyNumber
+          cartNum++
+          selectAll.push(true)
+        }
+      })
+      this.selectAll = selectAll.length > 0 ? selectAll.length === this.cart.length : false
+      this.total = total
+      this.cartNum = cartNum
+      Storage.setItem('cart',this.cart)
+    },
+    toggleSelectAll(){
+      this.cart.forEach(item => {
+        item.selected = !this.selectAll
+      })
+      this.countCart()
+    },
+    toggleSelect(goodsId){
+      const index = this.cart.findIndex(item => item.id === goodsId)
+      this.cart[index].selected = !this.cart[index].selected
+      this.countCart()
+    },
+    addCart(goodsId){
+      const index = this.cart.findIndex(item => item.id === goodsId)
+      this.cart[index].buyNumber++
+      this.countCart()
+    },
+    reduceCart(goodsId){
+      const index = this.cart.findIndex(item => item.id === goodsId)
+      if(this.cart[index].buyNumber > 1){
+        this.cart[index].buyNumber--
+        this.countCart()
+      }
+    },
+    deleteCart(goodsId){
+      this.$showModal({
+        content:'确定要删除吗？',
+        success:res => {
+          const index = this.cart.findIndex(item => item.id === goodsId)
+          if(res.confirm && index > -1){
+            this.cart.splice(index,1)
+            this.countCart()
+          }
+          if(res.cancel){
+            this.cart[index].delete = false
+          }
+        }
+      })
+    },
     touchStart(event){
-      touchStartX = event.changedTouches[0].cllientX
+      touchStartX = event.changedTouches[0].clientX
       touchStartTime = event.timeStamp
     },
     touchEnd(event){
-      // const elem = event.currentTarget
-      // var siblings = siblingNode(elem)
       const distance = event.changedTouches[0].clientX - touchStartX
       const time = event.timeStamp - touchStartTime
-      console.log(distance,time);
-      // if(distance < -100){//左滑 显示删除按钮
-      //   elem.classList.add('cart-delete')
-      //   siblings.forEach(function(item){
-      //     item.classList.remove('cart-delete')
-      //   })
-      // }
-      // if(distance > 100){
-      //   elem.classList.remove('cart-delete')
-      // }
+      const goodsId = parseInt(event.currentTarget.dataset.goodsId)
+      const index = this.cart.findIndex(item => item.id === goodsId)
+      if(distance < -100 && time < 500){//左滑 显示删除按钮
+        this.cart.forEach((item,key) => {
+          if(key !== index){
+            item.delete = false
+          }else{
+            item.delete = true
+          }
+        })
+      }
+      if(distance > 100 && time < 500){
+        this.cart[index].delete = false
+      }
     }
   }
 }
@@ -71,8 +149,8 @@ export default {
 .page{
   width:100%;
   min-height:100%;
-  margin-top:$page-margin-top;
-  padding-bottom: $footer-h;
+  margin-top:$header-h;
+  padding-bottom: $footer-h+.9rem;
 }
 .cart-list{
   width:100%;
@@ -177,7 +255,7 @@ export default {
   align-items: center;
   position: fixed;
   left:0;
-  bottom:0;
+  bottom:$footer-h;
   background:#fff;
 }
 .submit{

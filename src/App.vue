@@ -16,7 +16,7 @@
 @import "./assets/scss/border";
 @import "./assets/scss/global";
 @import "../fonts/iconfont.css";
-#app{
-    margin-top:$page-margin-top;
-}
+// #app{
+//     margin-top:$page-margin-top;
+// }
 </style>

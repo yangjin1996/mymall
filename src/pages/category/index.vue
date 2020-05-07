@@ -71,6 +71,7 @@ export default {
 .content{
     width:100%;
     height:100%;
+    margin-top:$page-margin-top;
     @include layout-flex;
     .content-left{
         width:2rem;
