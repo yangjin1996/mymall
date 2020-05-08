@@ -2,7 +2,9 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../pages/home/index.vue";
 import Category from "../pages/category/index";
-import GoodsList from "../pages/goods-list/index";
+import GoodsList from "../pages/goods-list/index"
+import GoodsDetail from "../pages/goods-detail/index";
+import GoodsError from "../pages/goods-notfound/index";
 import Cart from "../pages/cart/index";
 
 Vue.use(VueRouter);
@@ -39,6 +41,34 @@ const routes = [
     },
     component: GoodsList
   },
+  {
+    path:"goods-error",
+    name:"GoodsError",
+    component:GoodsError
+  },
+  {
+    path:"/goods-detail",
+    redirect:"/"
+  },
+  {
+    path: "/goods-detail/:id",
+    beforeEnter(to, from, next) {
+      const id = to.params.id
+      if(!/^\d+$/.test(id)){
+        console.log(to.params.id)
+        next(from.path)
+      }else{
+        next()
+      }
+    },
+    props:route => {
+      return {
+        id:parseInt(route.params.id)
+      }
+    },
+    name: "GoodsDetail",
+    component:GoodsDetail
+  }
 ];
 const router = new VueRouter({
   mode: "history",
