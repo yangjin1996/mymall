@@ -29,7 +29,8 @@ export default {
         }
     },
     methods: {
-        addToCart(){
+        addToCart(e){
+            e.stopPropagation()
             if(Object.keys(this.goods).length === 0){
                 return
             }
@@ -51,7 +52,6 @@ export default {
                     selected,
                     buyNumber:this.buyNumber + buyNumber
                 }
-                // console.log(buyNumber,this.buyNumber);
             }
             Storage.setItem('cart',cart)
             this.$showModal({

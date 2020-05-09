@@ -7,9 +7,9 @@
   <div v-else class="menu-header border-bottom" :style="`opacity:${opacity}`">
     <span class="iconfont cell">&#xe6b3;</span>
       <ul class="header-tab">
-        <li class="active">商品</li>
-        <li>评论</li>
-        <li>详情</li>
+        <li :class="{active:scrollTab==='goods'}" @click="changeTab('goods')">商品</li>
+        <li :class="{active:scrollTab==='comment'}" @click="changeTab('comment')">评论</li>
+        <li :class="{active:scrollTab==='detail'}" @click="changeTab('detail')">详情</li>
       </ul>
     <span class="iconfont cell">&#xe60c;</span>
   </div>
@@ -26,6 +26,14 @@ export default {
     opacity:{
       type:Number,
       default:1
+    },
+    scrollTab:{
+      type:String
+    }
+  },
+  methods:{
+    changeTab(tabName){
+      this.$emit('tab',tabName)
     }
   }
 }

@@ -43,6 +43,9 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        .iconfont{
+            font-size: .26rem;
+        }
         .internal span{
             font-size: 0.26rem;
         }
