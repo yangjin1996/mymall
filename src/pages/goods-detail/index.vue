@@ -6,9 +6,65 @@
       <div class="goods">
         <detail-gallery :gallery="gallery"></detail-gallery>
       </div>
-      <div style="height:200px;">商品</div>
-      <div style="height:200px;" id="comment">评论</div>
-      <div id="detail">详情</div>
+      <goods-info :goods="goods"></goods-info>
+      <!--商品基本信息
+      <div class="goodsInfo" style="height:100px;background-color:#fff">
+        <div class="price">￥<span>299</span></div>
+        <div class="markrtPrice">价格：<span>304</span></div>
+        <div class="title">性感单鞋女低跟</div>
+        <div class="goodsNum">
+          <span>月销量502件</span>
+          <span>库存2000件</span>
+        </div>
+      </div>-->
+      <!--优惠信息-->
+      <div class="sale" style="height:100px;background-color:#fff;margin-top:.2rem;">
+        <ul>
+          <li class="discounts">
+            <div>
+              <span>优惠</span>
+              <span>领取优惠券</span>
+            </div>
+            <div>
+              领取
+              <span class="iconfont">&#xe62a;</span>
+            </div>
+          </li>
+          <li class="integral">
+            <span>促销</span>
+            <span>积分</span>
+            <span>购买可得{{goods.point}}积分</span>
+            <span class="iconfont">&#xe62a;</span>
+          </li>
+          <li class="server">
+            <span>服务</span>
+            <span>假一赔四</span>
+            <span>30天质保+</span>
+            <span>急速退款</span>
+            <span class="iconfont">&#xe62a;</span>
+          </li>
+          
+        </ul>
+      </div>
+      <!--用户评论-->
+      <div id="comment" class="comment" style="height:100px;background-color:#fff;margin-top:.2rem;">
+        <div class="head">
+          <span>商品评价（{{comment.count}}）</span>
+          <span class="iconfont" v-if="comment.count > 0">查看全部&#xe62a;</span>
+        </div>
+        <div class="commentContent">
+          <span>张三</span>
+          <span>13333333333</span>
+          <p>好评</p>
+        </div>
+      </div>
+      <!--详情-->
+      <div id="detail">
+        <div class="line"><p>详情</p></div>
+        <div class="img">
+          <img :src="item" v-for="(item, i) in goods.content" :key="i">
+        </div>
+      </div>
     </div>
   </div>
   <div class="footer border-top">
@@ -38,13 +94,15 @@
 import BScroll from "better-scroll"
 import DetailHeader from "./Header"
 import DetailGallery from "./Gallery"
+import GoodsInfo from "./GoodsInfo"
 export default {
   props:{
     id:Number
   },
   components:{
     DetailHeader,
-    DetailGallery
+    DetailGallery,
+    GoodsInfo
   },
   data(){
     return{
@@ -82,7 +140,7 @@ export default {
     },
     changeTab(tabName){
       this.scrollTab = tabName
-      this.scroll.scrollToElement('#' + tabName,1000,0,-50)
+      this.scroll.scrollToElement('#' + tabName,500,0,-50)
     },
     initScroll(){
       this.$nextTick(() => {
@@ -130,6 +188,48 @@ export default {
   height:600px;
   background:$color-c;
   overflow: hidden;
+}
+.integral{
+  display:flex;
+  span:nth-child(2){
+    margin:0 .2rem;
+  }
+  span:nth-child(4){
+    flex:1;
+    text-align:right;
+  }
+}
+.discounts{
+  display:flex;
+  justify-content:space-between;
+}
+.server{
+  display:flex;
+  justify-content:space-between;
+}
+#detail{
+  margin-top:.4rem;
+  .line{
+    width:2.5rem;
+    height:.02rem;
+    background-color:#333;
+    margin:0 auto;
+    position:relative;
+    p{
+      padding:0 .2rem;
+      background-color:#eee;
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+    }
+  }
+  .img{
+    margin-top:.4rem;
+    img{
+      width:100%;
+    }
+  }
 }
 .footer{
   width:100%;

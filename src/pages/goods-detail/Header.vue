@@ -33,7 +33,7 @@ export default {
   },
   methods:{
     changeTab(tabName){
-      this.$emit('tab',tabName)
+      this.$emit('tab',tabName);
     }
   }
 }
