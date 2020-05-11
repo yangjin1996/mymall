@@ -71,6 +71,7 @@ export default {
           if(val !== password){
             return {error:1,message:'两次密码不一致'}
           }
+          return {error:0}
         },
         nickname(val){
           if(val === ''){
@@ -101,10 +102,18 @@ export default {
         confirmPwd:this.confirmPwd,
         nickname:this.nickname
       }
-      const validate = this.registerValidate(data)
-      console.log('validate',validate);
+      const validate = this.validate(data)
+      if(!validate){
+        return
+      }
+      this.axios.post('shose/user/register',data).then(() => {
+        this.$router.push('./login')
+      }).catch(err => {
+        alert(err.message)
+        return false
+      })
     },
-    registerValidate(data){
+    validate(data){
       for(let key in data){
         if(Reflect.has(this.formDataValidator,key)){
           const res = this.formDataValidator[key](data[key],data.password)
