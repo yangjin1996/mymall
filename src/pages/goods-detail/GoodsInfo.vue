@@ -1,5 +1,5 @@
 <template>
-<div class="goodsInfo" style="height:100px;background-color:#fff">
+<div class="goodsInfo" style="background-color:#fff">
     <div class="price">￥<span>{{goods.goods_price}}</span></div>
     <div class="markrtPrice">价格：<span>{{goods.market_price}}</span></div>
     <div class="title">{{goods.goods_name}}</div>
@@ -21,14 +21,36 @@ export default {
 </script>
 <style lang='scss' scoped>
 @import '~@/assets/scss/global';
+.goodsInfo{
+  padding:.2rem;
+  box-sizing:border-box;
+}
 .price{
-  font-size:.24rem;
-  color:rgb(189, 11, 11);
+  font-size:.28rem;
+  color:$color-a;
   font-weight:550;
   span{
-    color:rgb(189, 11, 11);
+    color:$color-a;
     font-weight:550;
-    font-size:.28rem;
+    font-size:.4rem;
   }
 }
+.markrtPrice{
+  margin:.2rem 0;
+  font-size:.3rem;
+  color:$color-e;
+  span{
+    text-decoration: line-through;
+  }
+}
+.title{
+  margin:.2rem 0;
+  line-height: .36rem;
+}
+.goodsNum{
+  color:$color-e;
+  display: flex;
+  justify-content: space-between;
+}
+
 </style>

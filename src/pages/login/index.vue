@@ -1,0 +1,114 @@
+<template>
+<div class="page">
+  <common-header title="登陆" :back="backUrl"></common-header>
+  <div class="content" ref="content">
+    <div class="login-container">
+      <div class="login-content">
+        <div class="login-input border-bottom">
+          <span>账号</span>
+          <input type="text" v-model.trim="username" placeholder="请输入账号">
+        </div>
+        <div class="login-input">
+          <span>登陆密码</span>
+          <input type="password" v-model.trim="password" placeholder="请输入登陆密码">
+        </div>
+      </div>
+      <div class="login-btn">
+        <div class="submit" @click="login">登陆</div>
+      </div>
+      <div class="login-desc">
+        <router-link to="/register">免费注册</router-link>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+import CommonHeader from "@/components/Header"
+export default {
+  components:{
+    CommonHeader
+  },
+  data() {
+    return {
+      backUrl:'',
+      username:'',
+      password:''
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.backUrl = from.path
+    })
+  },
+  mounted(){
+    let bodyHeight = document.documentElement.offsetHeight
+    this.$refs.content.style.height = bodyHeight + 'px'
+  },
+  methods:{
+    login(){
+
+    }
+  }
+}
+</script>
+
+<style lang='scss' scoped>
+@import '~@/assets/scss/global';
+.page{
+  width:100%;
+  height:100%;
+  margin-top:$header-h;
+  .content{
+    background:#f5f5f5;
+    width:100%;
+  }
+}
+.login-container{
+  width:100%;
+  padding:.4rem 0;
+  .login-content{
+    width:100%;
+    background:#fff;
+    .login-input{
+      width:100%;
+      height:1rem;
+      display:flex;
+      span{
+        width:1.5rem;
+        height:100%;
+        line-height:1rem;
+        text-indent:.2rem;
+      }
+      input{
+        flex:1;
+        height:100%;
+      }
+    }
+  }
+  .login-btn{
+    width:100%;
+    height:1rem;
+    margin-top:.4rem;
+    padding:0 .2rem;
+    box-sizing: border-box;
+    .submit{
+      width:100%;
+      height:100%;
+      background:$color-a;
+      @include layout-flex;
+      color:#fff;
+      font-size:.32rem;
+      border-radius: .1rem;
+    }
+  }
+  .login-desc{
+    line-height: 1rem;
+    text-align: right;
+    font-size: .28rem;
+    color:$color-a;
+    padding-right:.2rem;
+  }
+}
+</style>

@@ -2,60 +2,52 @@
 <div>
   <detail-header :showIconMenu="showIconMenu" :opacity="headerOpacity" :scrollTab="scrollTab" @tab="changeTab"></detail-header>
   <div class="page" ref="page">
-    <div style="height:3000px">
+    <div>
       <div class="goods">
         <detail-gallery :gallery="gallery"></detail-gallery>
       </div>
+      <!--商品基本信息-->
       <goods-info :goods="goods"></goods-info>
-      <!--商品基本信息
-      <div class="goodsInfo" style="height:100px;background-color:#fff">
-        <div class="price">￥<span>299</span></div>
-        <div class="markrtPrice">价格：<span>304</span></div>
-        <div class="title">性感单鞋女低跟</div>
-        <div class="goodsNum">
-          <span>月销量502件</span>
-          <span>库存2000件</span>
-        </div>
-      </div>-->
       <!--优惠信息-->
-      <div class="sale" style="height:100px;background-color:#fff;margin-top:.2rem;">
+      <div class="sale">
         <ul>
           <li class="discounts">
             <div>
-              <span>优惠</span>
-              <span>领取优惠券</span>
+              <span class="message">优惠</span>
+              <span class="receive" @click="getCoupon">领取优惠券</span>
             </div>
             <div>
               领取
-              <span class="iconfont">&#xe62a;</span>
+              <span class="iconfont message">&#xe62a;</span>
             </div>
           </li>
           <li class="integral">
-            <span>促销</span>
-            <span>积分</span>
+            <span class="message">促销</span>
+            <span class="credits">积分</span>
             <span>购买可得{{goods.point}}积分</span>
-            <span class="iconfont">&#xe62a;</span>
+            <span class="iconfont message">&#xe62a;</span>
           </li>
           <li class="server">
-            <span>服务</span>
+            <span class="message">服务</span>
             <span>假一赔四</span>
             <span>30天质保+</span>
             <span>急速退款</span>
-            <span class="iconfont">&#xe62a;</span>
+            <span class="iconfont message">&#xe62a;</span>
           </li>
-          
         </ul>
       </div>
       <!--用户评论-->
-      <div id="comment" class="comment" style="height:100px;background-color:#fff;margin-top:.2rem;">
+      <div id="comment" class="comment">
         <div class="head">
           <span>商品评价（{{comment.count}}）</span>
           <span class="iconfont" v-if="comment.count > 0">查看全部&#xe62a;</span>
         </div>
-        <div class="commentContent">
-          <span>张三</span>
-          <span>13333333333</span>
-          <p>好评</p>
+        <div class="commentContent" v-for="(item,index) in comment.list" :key="index">
+          <div>
+            <span>{{item.username}}</span>
+            <span>{{item.add_time}}</span>
+          </div>
+          <p>{{item.content}}</p>
         </div>
       </div>
       <!--详情-->
@@ -172,12 +164,12 @@ export default {
         this.gallery = gallery
         this.goods = goods
         console.log(this.comment,this.goods);
-        
       }).catch(err => {
         console.log(err)
         this.$router.replace('/goods-error')
       })
-    }
+    },
+    getCoupon(){},
   }
 }
 </script>
@@ -199,9 +191,27 @@ export default {
     text-align:right;
   }
 }
+.sale{
+  margin-top:.2rem;
+  background-color: #fff;
+  padding:.2rem;
+  box-sizing: border-box;
+}
 .discounts{
   display:flex;
   justify-content:space-between;
+  .receive{
+    margin-left:.2rem;
+  }
+}
+.message{
+  color:$color-e;
+}
+.integral{
+  margin:.2rem 0;
+  .credits{
+    color:$color-a;
+  }
 }
 .server{
   display:flex;
@@ -212,10 +222,11 @@ export default {
   .line{
     width:2.5rem;
     height:.02rem;
-    background-color:#333;
+    background-color:#666;
     margin:0 auto;
     position:relative;
     p{
+      color:#666;
       padding:0 .2rem;
       background-color:#eee;
       position:absolute;
@@ -228,6 +239,32 @@ export default {
     margin-top:.4rem;
     img{
       width:100%;
+    }
+  }
+}
+.iconfont{
+  font-size: .24rem;
+}
+.comment{
+  background-color:#fff;
+  margin-top:.2rem;
+  padding:.2rem;
+  box-sizing: border-box;
+  .commentContent{
+    margin:.15rem 0;
+    div{
+      display: flex;
+      justify-content: space-between;
+    }
+    p{
+      line-height:.32rem;
+    }
+  }
+  .head{
+    display: flex;
+    justify-content: space-between;
+    .iconfont{
+      color:$color-a;
     }
   }
 }
