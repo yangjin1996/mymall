@@ -2,7 +2,7 @@
 <div class="header-container">
   <div v-if="showIconMenu" class="icon-header">
     <span class="iconfont cell">&#xe6b3;</span>
-    <span class="iconfont cell">&#xe60c;</span>
+    <span class="iconfont cell" @click="$router.push('/cart')">&#xe60c;</span>
   </div>
   <div v-else class="menu-header border-bottom" :style="`opacity:${opacity}`">
     <span class="iconfont cell">&#xe6b3;</span>
@@ -11,7 +11,7 @@
         <li :class="{active:scrollTab==='comment'}" @click="changeTab('comment')">评论</li>
         <li :class="{active:scrollTab==='detail'}" @click="changeTab('detail')">详情</li>
       </ul>
-    <span class="iconfont cell">&#xe60c;</span>
+    <span class="iconfont cell" @click="$router.push('/cart')">&#xe60c;</span>
   </div>
 </div>
 </template>

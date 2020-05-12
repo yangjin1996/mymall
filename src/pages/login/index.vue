@@ -73,7 +73,6 @@ export default {
     let bodyHeight = document.documentElement.offsetHeight
     this.$refs.content.style.height = bodyHeight + 'px'
     this.loginRedirect = decodeURIComponent(this.$route.query.url) || '/'
-    
   },
   methods:{
     login(){
@@ -89,6 +88,7 @@ export default {
         const {token} = res
         Token.setToken(token)
         this.$router.push(this.loginRedirect)
+        // console.log(this.loginRedirect)
         //跳转页面
       }).catch(err => {
         this.$showToast(err.message)

@@ -8,6 +8,7 @@ import GoodsError from "../pages/goods-notfound/index";
 import Cart from "../pages/cart/index";
 import Login from "../pages/login/index";
 import Register from "../pages/register/index";
+import Coupon from "../pages/coupon/index";
 
 Vue.use(VueRouter);
 
@@ -61,6 +62,11 @@ const routes = [
   {
     path:"/goods-detail",
     redirect:"/"
+  },
+  {
+    path:"/coupon",
+    name:"Coupon",
+    component:Coupon
   },
   {
     path: "/goods-detail/:id",

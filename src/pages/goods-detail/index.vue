@@ -11,10 +11,10 @@
       <!--优惠信息-->
       <div class="sale">
         <ul>
-          <li class="discounts">
+          <li class="discounts" @click="getCoupon">
             <div>
               <span class="message">优惠</span>
-              <span class="receive" @click="getCoupon">领取优惠券</span>
+              <span class="receive">领取优惠券</span>
             </div>
             <div>
               领取
@@ -76,7 +76,7 @@
     </div>
     <div class="footer-right">
       <div class="buy">立即购买</div>
-      <div class="cart">加入购物车</div>
+      <div class="cart" @click="addToCart">加入购物车</div>
     </div>
   </div>
 </div>
@@ -88,6 +88,7 @@ import DetailHeader from "./Header"
 import DetailGallery from "./Gallery"
 import GoodsInfo from "./GoodsInfo"
 import {Token} from '@/utils/token'
+import {Storage} from '@/utils/storage'
 export default {
   props:{
     id:Number
@@ -187,7 +188,6 @@ export default {
             this.showIconMenu = true
           }
         })
-        
       })
     },
     getGoods(){
@@ -199,13 +199,56 @@ export default {
         }
         this.gallery = gallery
         this.goods = goods
-        console.log(this.comment,this.goods);
+        console.log(this.goods);
       }).catch(err => {
         console.log(err)
         this.$router.replace('/goods-error')
       })
     },
-    getCoupon(){},
+    addToCart(){
+        if(this.id === 0){
+            return
+        }
+        const goods = this.goods
+        const cart = Storage.getItem('cart') || []
+        const index = cart.findIndex(item => item.goodsId === this.id)
+        const cartData = {
+          id:goods.goods_id,
+          img:goods.goods_img,
+          name:goods.goods_name,
+          price:goods.goods_price
+        }
+        if(index === -1){
+            cartData.selected = true
+            cartData.buyNumber = 1
+            cart.push(cartData)
+        }else{
+            const buyNumber = cart[index].buyNumber
+            const selected = cart[index].selected
+            cart[index] = {
+                ...cartData,
+                selected,
+                buyNumber:1 + buyNumber
+            }
+        }
+        Storage.setItem('cart',cart)
+        this.$showModal({
+            content:'添加购物车成功，需要结算吗？',
+            btn:['是','否'],
+            success:res =>{
+                if(res.confirm){
+                    this.$router.push('/cart')
+                } 
+            }
+        })
+    },
+    getCoupon(){
+      const token = Token.getToken()
+      if(token !== ''){
+        const url = encodeURIComponent('/goods-detail/' + this.goods.goods_id)
+        this.$router.push(`/coupon?url=${url}`)
+      }
+    },
   }
 }
 </script>
