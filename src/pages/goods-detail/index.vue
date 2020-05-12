@@ -87,6 +87,7 @@ import BScroll from "better-scroll"
 import DetailHeader from "./Header"
 import DetailGallery from "./Gallery"
 import GoodsInfo from "./GoodsInfo"
+import {Token} from '@/utils/token'
 export default {
   props:{
     id:Number
@@ -124,11 +125,46 @@ export default {
   methods:{
     async initCollect(){
       //判断是否登陆
+      const token = Token.getToken()
+      if(token === ''){
+        this.isCollect = false
+        return
+      }
+      this.axios.get('shose/collect/check',{
+        params:{
+          goods_id:this.id
+        },
+        headers:{
+          token
+        }
+      }).then(res => {
+        this.isCollect = res.collect === 1
+      })
     },
-    collect(){
+    async collect(){
       //判断是否登陆
+      const token = Token.getToken()
+      if(token === ''){
+        const url = encodeURIComponent('/goods-detail/' + this.id)
+        this.$router.push(`/login?url=${url}`)
+        return
+      }
       // 如果没有登陆，则跳转至登陆页面
       // 如果已经地登陆，判断是收藏还是取消收藏
+      let path = ''
+      if(this.isCollect){
+        path = 'shose/collect/cancel'
+      }else{
+        path = 'shose/collect/confirm'
+      }
+      this.$showLoading()
+      await this.axios.post(path,{goods_id:this.id},{
+        headers:{
+          token
+        }
+      })
+      this.$hideLoading()
+      this.isCollect = !this.isCollect
     },
     changeTab(tabName){
       this.scrollTab = tabName

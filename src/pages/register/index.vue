@@ -1,6 +1,6 @@
 <template>
 <div class="page">
-  <common-header title="注册" :back="backUrl"></common-header>
+  <common-header title="注册" :back="`/login?url=${encodeURIComponent(loginRedirect)}`"></common-header>
   <div class="content" ref="content">
     <div class="login-container">
       <div class="login-content">
@@ -25,7 +25,7 @@
         <div class="submit" @click="register">提交</div>
       </div>
       <div class="login-desc">
-        <router-link to="/login">去登陆</router-link>
+        <router-link :to="`/login?url=${encodeURIComponent(loginRedirect)}`">去登陆</router-link>
       </div>
     </div>
   </div>
@@ -45,13 +45,14 @@ export default {
       password:'',
       confirmPwd:'',
       nickname:'',
+      loginRedirect:'',
       formDataValidator:{
         username(val){
           if(val === ''){
             return {error:1,message:'账号为空'}
           }
-          if(val.length < 3){
-            return {error:1,message:'账号长度小于3'}
+          if(val.length < 2){
+            return {error:1,message:'账号长度小于2'}
           }
           return {error:0}
         },
@@ -77,22 +78,18 @@ export default {
           if(val === ''){
             return {error:1,message:'昵称为空'}
           }
-          if(val.length < 3){
-            return {error:1,message:'昵称长度小于3'}
+          if(val.length < 2){
+            return {error:1,message:'昵称长度小于2'}
           }
           return {error:0}
         },
       }
     }
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.backUrl = from.path
-    })
-  },
   mounted(){
     let bodyHeight = document.documentElement.offsetHeight
     this.$refs.content.style.height = bodyHeight + 'px'
+    this.loginRedirect = decodeURIComponent(this.$route.query.url) || '/'
   },
   methods:{
     register(){
@@ -107,9 +104,9 @@ export default {
         return
       }
       this.axios.post('shose/user/register',data).then(() => {
-        this.$router.push('./login')
+        this.$router.push(`/login?url=${encodeURIComponent(this.loginRedirect)}`)
       }).catch(err => {
-        alert(err.message)
+        this.$showToast(err.message)
         return false
       })
     },
@@ -118,7 +115,7 @@ export default {
         if(Reflect.has(this.formDataValidator,key)){
           const res = this.formDataValidator[key](data[key],data.password)
           if(res.error !== 0){
-            alert(res.message)
+            this.$showToast(res.message)
             return false
           }
         }

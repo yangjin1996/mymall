@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
-    <div class="toast-container">
-      <div class="mask" v-if="visible"></div>
+    <div class="toast-container" v-if="visible">
+      <div class="mask" v-if="mask"></div>
       <div class="toast-txt">{{message}}</div>
     </div>
   </transition>

@@ -17,7 +17,7 @@
         <div class="submit" @click="login">登陆</div>
       </div>
       <div class="login-desc">
-        <router-link to="/register">免费注册</router-link>
+        <router-link :to="`/register?url=${encodeURIComponent(loginRedirect)}`">免费注册</router-link>
       </div>
     </div>
   </div>
@@ -26,6 +26,7 @@
 
 <script>
 import CommonHeader from "@/components/Header"
+import {Token} from '@/utils/token.js'
 export default {
   components:{
     CommonHeader
@@ -35,13 +36,14 @@ export default {
       backUrl:'',
       username:'',
       password:'',
+      loginRedirect:'',
       formDataValidator:{
         username(val){
           if(val === ''){
             return {error:1,message:'账号为空'}
           }
-          if(val.length < 3){
-            return {error:1,message:'账号长度小于3'}
+          if(val.length < 2){
+            return {error:1,message:'账号长度小于2'}
           }
           return {error:0}
         },
@@ -58,13 +60,20 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.backUrl = from.path
-    })
+    const token = Token.getToken()
+    if(token !== ''){
+      next(from.path)
+    }else{
+        next(vm => {
+        vm.backUrl = from.path
+      })
+    }
   },
   mounted(){
     let bodyHeight = document.documentElement.offsetHeight
     this.$refs.content.style.height = bodyHeight + 'px'
+    this.loginRedirect = decodeURIComponent(this.$route.query.url) || '/'
+    
   },
   methods:{
     login(){
@@ -76,13 +85,21 @@ export default {
       if(!validate){
         return
       }
+      this.axios.post('shose/user/login',data).then(res => {
+        const {token} = res
+        Token.setToken(token)
+        this.$router.push(this.loginRedirect)
+        //跳转页面
+      }).catch(err => {
+        this.$showToast(err.message)
+      })
     },
     validate(data){
       for(let key in data){
         if(Reflect.has(this.formDataValidator,key)){
           const res = this.formDataValidator[key](data[key],data.password)
           if(res.error !== 0){
-            alert(res.message)
+            this.$showToast(res.message)
             return false
           }
         }

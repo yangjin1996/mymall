@@ -5,7 +5,7 @@ const loading = {
     const vm = new ToastContructor()
     vm.$mount(document.createElement('div'))
     document.body.appendChild(vm.$el)
-
+    
     Vue.prototype.$showToast = function(message='',mask = true,duration=1500){
       if(message !== ''){
         vm.visible = true
@@ -17,7 +17,6 @@ const loading = {
           vm.message = ''
         },duration)
       }
-      
     }
   }
 }
