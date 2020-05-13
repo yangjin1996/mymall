@@ -9,6 +9,8 @@ import Cart from "../pages/cart/index";
 import Login from "../pages/login/index";
 import Register from "../pages/register/index";
 import Coupon from "../pages/coupon/index";
+import Order from "../pages/order/index";
+import {Token} from "../utils/token"
 
 Vue.use(VueRouter);
 
@@ -67,6 +69,12 @@ const routes = [
     path:"/coupon",
     name:"Coupon",
     component:Coupon
+    
+  },
+  {
+    path:"/order",
+    name:"Order",
+    component:Order
   },
   {
     path: "/goods-detail/:id",
@@ -93,5 +101,21 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
+//需要做验证的路由名称
+const AUTH_ROUTER_NAME = ['Coupon','Order']
+//登陆验证
+router.beforeEach((to,from,next) => {
+  if(AUTH_ROUTER_NAME.includes(to.name)){
+    const token = Token.getToken()
+    if(token === ''){
+      const url = encodeURIComponent(from.path)
+      next(`/login?url=${url}`)
+    }else{
+      next()
+    }
+  }else{
+    next()
+  }
+})
 
 export default router;

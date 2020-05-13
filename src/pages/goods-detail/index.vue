@@ -199,7 +199,6 @@ export default {
         }
         this.gallery = gallery
         this.goods = goods
-        console.log(this.goods);
       }).catch(err => {
         console.log(err)
         this.$router.replace('/goods-error')
@@ -243,11 +242,9 @@ export default {
         })
     },
     getCoupon(){
-      const token = Token.getToken()
-      if(token !== ''){
-        const url = encodeURIComponent('/goods-detail/' + this.goods.goods_id)
-        this.$router.push(`/coupon?url=${url}`)
-      }
+      
+      const url = encodeURIComponent('/goods-detail/' + this.goods.goods_id)
+      this.$router.push(`/coupon?url=${url}`)
     },
   }
 }
