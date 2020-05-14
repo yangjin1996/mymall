@@ -1,5 +1,5 @@
 <template>
-<div class="address-container">
+<div class="address-container" @click="editAddress">
   <span class="iconfont position-icon">&#xe622;</span>
   <div class="address">
     <div v-if="showAddress" class="existAddress">111</div>
@@ -18,10 +18,15 @@ export default {
   },
   computed:{
     showAddress(){
-      // console.log(Object.keys(this.address));
+      console.log(Object.keys(this.address));
       return !!Object.keys(this.address).length
     }
-  }
+  },
+  methods: {
+    editAddress(){
+      this.$router.push('/address')
+    }
+  },
 }
 </script>
 <style lang='scss' scoped>

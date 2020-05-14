@@ -19,7 +19,7 @@ export default {
   data(){
     return {
       address:{},
-      goods:[],
+      goods:[{a:1}],
       coupon:[]
     }
   },
@@ -49,6 +49,7 @@ export default {
           token:USER_TOKEN
         }
       })
+      console.log(address)
       this.address = address || {}
     },
     async getUserCoupon(){

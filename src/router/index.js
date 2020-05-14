@@ -10,6 +10,7 @@ import Login from "../pages/login/index";
 import Register from "../pages/register/index";
 import Coupon from "../pages/coupon/index";
 import Order from "../pages/order/index";
+import UserAddress from "../pages/user-address/index";
 import {Token} from "../utils/token"
 
 Vue.use(VueRouter);
@@ -69,7 +70,18 @@ const routes = [
     path:"/coupon",
     name:"Coupon",
     component:Coupon
-    
+  },
+  // {
+  //   path:'/user',
+  //   redirect:'',
+  //   children:[
+      
+  //   ]
+  // },
+  {
+    path:'/address',
+    name:'UserAddress',
+    component:UserAddress
   },
   {
     path:"/order",
