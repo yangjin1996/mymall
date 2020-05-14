@@ -48,7 +48,7 @@ export default {
       cart:[],
       selectAll:true,
       total:0,
-      cartNum:0
+      cartNum:0,
     }
   },
   mounted(){
@@ -65,12 +65,18 @@ export default {
   },
   methods:{
     submitCart(){
-      if(this.cartNum === 0){
-        this.$showTost('至少选择一个商品')
-        return
-      }
-      this.$router.push('/order')
+      // if(this.cartNum === 0){
+      //   this.$showToast({
+      //     message:"至少选择一个商品"
+      //   })
+      //   return
+      // }
+      this.$router.push('/order?loginRedirect=/' + encodeURIComponent('/order'))
     },
+    // toGoodsDetail(goodsId){
+      // this.$router.push(`/goods-detail/${goodsId}`)
+      // console.log(goodsId);
+    // },
     countCart(){
       let selectAll = []
       let total = 0

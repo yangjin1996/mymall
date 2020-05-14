@@ -108,7 +108,14 @@ router.beforeEach((to,from,next) => {
   if(AUTH_ROUTER_NAME.includes(to.name)){
     const token = Token.getToken()
     if(token === ''){
-      const url = encodeURIComponent(from.path)
+      console.log(from);
+      console.log(to);
+      let url
+      if(to.query.loginRedirect !== ''){
+        url = decodeURIComponent(to.query.loginRedirect)
+      }else{
+        url = encodeURIComponent(from.path)
+      }
       next(`/login?url=${url}`)
     }else{
       next()
