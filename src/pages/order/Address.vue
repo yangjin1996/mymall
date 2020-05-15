@@ -2,7 +2,7 @@
 <div class="address-container" @click="editAddress">
   <span class="iconfont position-icon">&#xe622;</span>
   <div class="address">
-    <div v-if="showAddress" class="existAddress">111</div>
+    <div v-if="showAddress" class="existAddress">地址显示</div>
     <div v-else class="empty-address">
       <span class="iconfont">+</span>添加收货地址
     </div>
@@ -18,13 +18,14 @@ export default {
   },
   computed:{
     showAddress(){
-      console.log(Object.keys(this.address));
       return !!Object.keys(this.address).length
     }
   },
   methods: {
     editAddress(){
-      this.$router.push('/address')
+      const id = parseInt(this.address.id) || 0
+      const url = encodeURIComponent('/order')
+      this.$router.push(`/order/address?id=${id}&url=${url}`)
     }
   },
 }

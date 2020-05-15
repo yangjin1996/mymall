@@ -71,7 +71,7 @@ export default {
       //   })
       //   return
       // }
-      this.$router.push('/order?loginRedirect=/' + encodeURIComponent('/order'))
+      this.$router.push('/order?loginRedirect=' + encodeURIComponent('/order'))
     },
     // toGoodsDetail(goodsId){
       // this.$router.push(`/goods-detail/${goodsId}`)

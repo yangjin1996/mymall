@@ -1,6 +1,6 @@
 <template>
 <div class="page">
-  <common-header title="我的地址" :back="backUrl"></common-header>
+  <common-header title="选择地址" :back="backUrl"></common-header>
   <div class="add-address" v-if="showAddAddress" @click="$router.push(`/user/add-address?url=${backUrl}`)">添加新地址</div>
 </div>
 </template>
@@ -31,6 +31,7 @@ export default {
   },
   mounted() {
       this.getUserAddress()
+      
   },
   methods: {
       async getUserAddress(){
