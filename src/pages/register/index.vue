@@ -109,7 +109,6 @@ export default {
         this.$showToast({
           message:err.message
         })
-        return false
       })
     },
     validate(data){

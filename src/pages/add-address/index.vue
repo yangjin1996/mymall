@@ -4,34 +4,37 @@
   <div class="add-address">
     <div class="row border-bottom">
       <label class="title">收货人</label>
-      <input type="text" placeholder="姓名" class="input">
+      <input type="text" placeholder="姓名" class="input" v-model="name">
     </div>
     <div class="row border-bottom">
       <label class="title">联系电话</label>
-      <input type="text" placeholder="手机" class="input">
+      <input type="text" placeholder="手机" class="input" v-model="phone">
     </div>
     <div class="row border-bottom">
       <label class="title">选择地区</label>
       <div class="input regin-input" @click="showChooseAddress=true">
-        {{region}}
+        {{regionText}}
         <span class="iconfont">&#xe62a;</span>
       </div>
     </div>
     <div class="row border-bottom">
       <label class="title">详细地址</label>
-      <textarea placeholder="街道门牌信息" class="textarea"></textarea>
+      <textarea placeholder="街道门牌信息" class="textarea" v-model="address"></textarea>
     </div>
     <div class="row border-bottom">
       <label class="title">设置为默认地址</label>
       <div class="switch-container">
-        <input type="checkbox" id="user-swidth">
+        <input type="checkbox" id="user-swidth" v-model="isDefault">
         <label for="user-swidth"></label>
       </div>
+    </div>
+    <div class="login-btn">
+      <div class="submit" @click="saveAddress">提交</div>
     </div>
   </div>
   <div class="choose-region" v-if="showChooseAddress">
     <div class="mask" @click="showChooseAddress=false"></div>
-    <v-distpicker :province="province" :city="city" :area="area" type="mobile" @selected="selectAddress"></v-distpicker>
+    <v-distpicker type="mobile" @selected="selectAddress"></v-distpicker>
   </div>
 </div>
 </template>
@@ -39,9 +42,10 @@
 <script>
 import VDistpicker from 'v-distpicker'
 import CommonHeader from '@/components/Header'
-// import {Token} from '@/utils/token'
-// const USER_TOKEN =Token.getToken()
-// const MAX_ADDRESS_NUM = 10
+import addressValidator from '@/validate/address'
+import {validate} from '@/utils/function'
+import {Token} from '@/utils/token'
+const USER_TOKEN =Token.getToken()
 export default {
   components:{
     CommonHeader,
@@ -50,37 +54,74 @@ export default {
   beforeRouteEnter (to, from, next) {
     console.log(to);
       next(vm => {
-          vm.backUrl = from.path
+          vm.backUrl = to.query.url || from.path
       })
   },
   data() {
       return {
           backUrl:'',
           showChooseAddress:false,
-          province:'',
-          city:'',
-          area:''
+          region:[],
+          name:'',
+          phone:'',
+          address:'',
+          isDefault:false
       }
   },
   mounted() {
       
   },
   computed:{
-    region(){
-      if(this.province === ''){
+    regionText(){
+      if(this.region.length === 0){
         return '地区信息'
       }else{
-        return `${this.province} ${this.city} ${this.area}`
+        return this.region.join(' ')
       }
     }
   },
   methods: {
-      selectAddress(data){
-        this.province = data.province.value
-        this.city = data.city.value
-        this.area = data.area.value
-        this.showChooseAddress = false
+    saveAddress(){
+      const data = {
+        name:this.name,
+        phone:this.phone,
+        province:this.region[0] || '',
+        city:this.region[1] || '',
+        area:this.region[2] || '',
+        address:this.address,
+        is_default:this.isDefault ? 1 : 0
       }
+      const res = validate(data,addressValidator)
+      if(res.error !== 0){
+        this.$showToast({
+          message:res.message
+        })
+        return
+      }
+      this.$showLoading()
+      this.axios.post('shose/address/add',data,{
+        headers:{
+          token:USER_TOKEN
+        }
+      }).then((res) => {
+        const addressId = res.address_id
+        this.$router.push(this.backUrl+'?selectAddressId'+addressId)
+      }).catch(err => {
+        this.$showToast({
+          message:err.message
+        })
+      }).finally(() => {
+        this.$hideLoading()
+      })
+    },
+    selectAddress(data){
+      this.region = [
+        data.province.value,
+        data.city.value,
+        data.area.value
+      ]
+      this.showChooseAddress = false
+    }
   },
 }
 </script>
@@ -122,6 +163,22 @@ export default {
         @include layout-flex($justify:space-between);
         color:$color-e;
       }
+    }
+  }
+  .login-btn{
+    width:100%;
+    height:1rem;
+    margin-top:.4rem;
+    padding:0 .2rem;
+    box-sizing: border-box;
+    .submit{
+      width:100%;
+      height:100%;
+      background:$color-a;
+      @include layout-flex;
+      color:#fff;
+      font-size:.32rem;
+      border-radius: .1rem;
     }
   }
   .choose-region{

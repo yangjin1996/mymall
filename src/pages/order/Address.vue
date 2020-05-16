@@ -2,7 +2,10 @@
 <div class="address-container" @click="editAddress">
   <span class="iconfont position-icon">&#xe622;</span>
   <div class="address">
-    <div v-if="showAddress" class="existAddress">地址显示</div>
+    <div v-if="showAddress" class="address-detail">
+      <div class="name">{{address.name}}<span>{{address.phone}}</span></div>
+      <div class="address-content">{{addressContent}}</div>
+    </div>
     <div v-else class="empty-address">
       <span class="iconfont">+</span>添加收货地址
     </div>
@@ -19,6 +22,12 @@ export default {
   computed:{
     showAddress(){
       return !!Object.keys(this.address).length
+    },
+    addressContent(){
+      if(Object.keys(this.address).length === 0) {
+        return ''
+      }
+      return `${this.address.province}${this.address.city}${this.address.area}${this.address.address}`
     }
   },
   methods: {
@@ -64,6 +73,31 @@ export default {
       .iconfont{
         font-size:.5rem;
         margin-right:.1rem;
+      }
+    }
+    .address-detail{
+      width:100%;
+      height:100%;
+      @include layout-flex(column,$align:flex-start);
+      .name{
+        line-height: .6rem;
+        font-size:.32rem;
+        color:$color-b;
+        span{
+          font-size:.24rem;
+          color:$color-e;
+          margin-left:.2rem;
+        }
+        .address-content{
+          font-size: .24rem;
+          color:$color-d;
+          display: -webkit-box;
+          -webkit-box-orient:vertical;
+          -webkit-line-clamp:2;
+          line-height: 14px;
+          overflow: hidden;
+          text-overflow:ellipsis;
+        }
       }
     }
   }

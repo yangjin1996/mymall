@@ -2,6 +2,12 @@
 <div class="page">
   <common-header title="确认订单" back="/cart"></common-header>
   <order-address :address="address"></order-address>
+  <div class="cart-container">
+    <div class="cart-item" v-for="item of cart" :key="item.id">
+      <img :src="item.img" class="cart-img"/>
+      <div class="cart-desc"></div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -19,14 +25,41 @@ export default {
   data(){
     return {
       address:{},
-      goods:[{a:1}],
-      coupon:[]
+      cart:[],
+      coupon:[],
+      addressId:0,
+      loadAddress:false
     }
   },
-  mounted(){
+  // watch: {
+  //   async addressId(){
+  //     this.$showLoading()
+  //     await this.getUserAddress()
+  //     this.$hideLoading()
+  //   }
+  // },
+  async mounted(){
+    this.addressId = this.$route.query.selectAddressId || 0
     this.initCart()
-    this.getUserAddress()
-    this.getUserCoupon()
+    try{
+      this.$showLoading()
+      // const address = Storage.getItem('address') || {}
+      // if(Object.keys(address).length === 0){
+      //   await this.getUserAddress()
+      // }else{
+      //   if(this.addressId === address.id){
+      //     this.address = address
+      //   }else{
+      //     await this.getUserAddress()
+      //   }
+      // }
+      await this.getUserAddress()
+      await this.getUserCoupon()
+    }catch(err){
+      console.log(err);
+    }finally{
+      this.$hideLoading()
+    }
   },
   methods:{
     initCart(){
@@ -47,10 +80,13 @@ export default {
       const address = await this.axios.get('shose/address/default',{
         headers:{
           token:USER_TOKEN
+        },
+        params:{
+          id:this.addressId
         }
       })
-      console.log(address)
       this.address = address || {}
+      Storage.setItem('address',this.address)
     },
     async getUserCoupon(){
       const coupon = await this.axios.get('shose/coupon/get',{
@@ -77,8 +113,26 @@ export default {
 .page{
   width:100%;
   height:100%;
-  padding:$header-h .2rem 0;
+  padding:$header-h .2rem .9rem;
   box-sizing: border-box;
   background:$color-c;
+  .cart-container{
+    width:100%;
+    background:#fff;
+    padding:.2rem;
+    box-sizing: border-box;
+    border-radius: .1rem;
+    margin-top:.2rem;
+    .cart-item{
+      width:100%;
+      height:1.8rem;
+      @include layout-flex;
+      margin-bottom: .2rem;
+      .cart-img{
+        width:1.8rem;
+        height:1.8rem;
+      }
+    }
+  }
 }
 </style>
