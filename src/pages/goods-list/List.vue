@@ -12,7 +12,6 @@
         </div>
     </div>
     <cart-btn :goods="item"></cart-btn>
-    <!-- <div class="buy iconfont">&#xe601;<p class="goodsNumber">{{goodsNum}}</p></div> -->
   </div>
 </div>
 </template>

@@ -10,7 +10,7 @@
   //   html.style.fontSize = fontSize + 'px'
   // })
 
-  (function(doc,win){
+  function init(doc,win){
     var docEl = doc.documentElement,
       resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
       recalc = function(){
@@ -21,7 +21,9 @@
       if(!doc.addEventListener) return;
         win.addEventListener(resizeEvt,recalc, false);
         doc.addEventListener('DOMContentLoaded',recalc,false);
-  })(document,window);
+  }
+  
+  init(document,window)
 
   export default {}
 </script>

@@ -36,7 +36,10 @@ export default {
             }
             const goods = this.goods
             const cart = Storage.getItem('cart') || []
-            const index = cart.findIndex(item => item.goodsId === goods.id)
+            const index = cart.findIndex(item => {
+                return item.id === goods.id
+            });
+            console.log(cart)
             if(index === -1){
                 const  cartData = {
                     ...goods,

@@ -5,8 +5,24 @@
   <div class="cart-container">
     <div class="cart-item" v-for="item of cart" :key="item.id">
       <img :src="item.img" class="cart-img"/>
-      <div class="cart-desc"></div>
+      <div class="cart-desc">
+        <div class="name">{{item.name}}</div>
+        <div class="price">{{item.price}}</div>
+        <div class="number">&times;{{item.buyNumber}}</div>
+      </div>
     </div>
+  </div>
+  <div class="coupon-container">
+    <div class="coupon-item" v-for="item of coupon" :key="item.id" @click="chooseCoupon(item.id)">
+      <span class="iconfont">&#xe61f;</span>
+      <div class="coupon-content">
+        使用￥{{item.money}}元优惠券
+      </div>
+      <span class="iconfont">{{item.selected?'&#xe8d8;':'&#xe629;'}}</span>
+    </div>
+  </div>
+  <div class="order-submit border-top">
+    共{{cartNum}}件商品，合计：{{actualPayment}}
   </div>
 </div>
 </template>
@@ -28,7 +44,11 @@ export default {
       cart:[],
       coupon:[],
       addressId:0,
-      loadAddress:false
+      loadAddress:false,
+      selectCouponId:0,
+      total:0,
+      cartNum:0,
+      actualPayment:0
     }
   },
   // watch: {
@@ -62,9 +82,39 @@ export default {
     }
   },
   methods:{
+    chooseCoupon(couponId){
+      if(this.selectCouponId != 0 && this.selectCouponId !== couponId){
+        this.actualPayment = this.total
+      }
+      this.selectCouponId = couponId
+      this.coupon.forEach(item => {
+        if(item.id === couponId){
+          const currentSelect = !item.selected
+          const money = parseFloat(item.money)
+          item.selected = currentSelect
+          if(currentSelect){
+            this.actualPayment -= money
+          }else{
+            this.actualPayment += money
+          }
+        }else{
+          item.selected  = false
+        }
+      })
+
+    },
     initCart(){
-      let cart = Storage.getItem('cart')
-      cart = cart.filter(item => item.selected)
+      let cartAll = Storage.getItem('cart')
+      let total = 0
+      let cartNum = 0
+      let cart = []
+      cartAll.map(item => {
+        if(item.selected){
+          total += item.buyNumber * item.price
+          cartNum++
+          cart.push(item)
+        }
+      })
       if(cart.length === 0){
         this.$showToast({
           message:"至少选择一个商品",
@@ -75,8 +125,16 @@ export default {
         return
       }
       this.cart = cart
+      this.total = total
+      this.cartNum = cartNum
+      this.actualPayment = total
     },
     async getUserAddress(){
+      // const userAddress = Storage.getItem('address') || {}
+      // if(Object.keys(userAddress).length > 0){
+      //   this.address = userAddress
+      //   return
+      // }
       const address = await this.axios.get('shose/address/default',{
         headers:{
           token:USER_TOKEN
@@ -94,16 +152,12 @@ export default {
           token:USER_TOKEN
         }
       }).then(res => res.coupon)
-      this.coupon = coupon.filter(item => {
-        let result
-        if(item.is_use === 1){
-          result = false
-        }else {
-          result = item.expires_time*1000 > Date.now()
+      this.coupon = coupon.map(item => {
+        if(item.is_use === 0 && item.expires_time*1000 > Date.now()){
+          item.selected = false
+          return item
         }
-        return result
       })
-      
     }
   }
 }
@@ -132,7 +186,58 @@ export default {
         width:1.8rem;
         height:1.8rem;
       }
+      .cart-desc{
+        width:0;
+        flex:1;
+        margin-left:.2rem;
+        height:80%;
+        @include layout-flex(column,space-between,flex-start);
+        font-size:.28rem;
+          color:$color-d;
+        .number{
+          font-size:.24rem;
+          color:$color-e;
+        }
+        .name{
+          line-height:.38rem;
+        }
+      }
     }
+  }
+  .coupon-container{
+    width:100%;
+    .coupon-item{
+      width:100%;
+      height:.76rem;
+      background-color:#fff;
+      border-radius:.38rem;
+      margin-top:.2rem;
+      padding:.2rem;
+      box-sizing:border-box;
+      @include layout-flex;
+      .iconfont{
+        color:$color-a;
+        font-size:.36rem;
+      }
+      .coupon-content{
+        width:0;
+        flex:1;
+        height:100%;
+        margin:0 .2rem;
+        color:$color-d;
+        font-size:.28rem;
+        line-height:.36rem;
+      }
+    }
+  }
+  .order-submit{
+    width:100%;
+    height:.9rem;
+    position:fixed;
+    left:0;
+    bottom:0;
+    background:#fff;
+    @include layout-flex;
   }
 }
 </style>
