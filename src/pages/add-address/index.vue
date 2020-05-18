@@ -45,6 +45,7 @@ import CommonHeader from '@/components/Header'
 import addressValidator from '@/validate/address'
 import {validate} from '@/utils/function'
 import {Token} from '@/utils/token'
+import {Storage} from '@/utils/storage'
 const USER_TOKEN =Token.getToken()
 export default {
   components:{
@@ -52,7 +53,7 @@ export default {
     VDistpicker
   },
   beforeRouteEnter (to, from, next) {
-    console.log(to);
+    // console.log(to);
       next(vm => {
           vm.backUrl = to.query.url || from.path
       })
@@ -104,8 +105,11 @@ export default {
           token:USER_TOKEN
         }
       }).then((res) => {
-        const addressId = res.address_id
-        this.$router.push(this.backUrl+'?selectAddressId'+addressId)
+        // const addressId = res.address_id
+        // this.$router.push(this.backUrl+'?selectAddressId'+addressId)
+        data.id = res.address_id
+        Storage.setItem('address',data)
+        this.$router.push('/order')
       }).catch(err => {
         this.$showToast({
           message:err.message

@@ -22,7 +22,11 @@
     </div>
   </div>
   <div class="order-submit border-top">
-    共{{cartNum}}件商品，合计：{{actualPayment}}
+    <div class="order-count">
+      共{{cartNum}}件商品，
+      <span class="order-total">合计：<em>￥{{actualPayment.toFixed(2)}}</em></span>
+    </div>
+    <button class="order-btn" @click="submitOrder">提交订单</button>
   </div>
 </div>
 </template>
@@ -101,7 +105,6 @@ export default {
           item.selected  = false
         }
       })
-
     },
     initCart(){
       let cartAll = Storage.getItem('cart')
@@ -130,11 +133,11 @@ export default {
       this.actualPayment = total
     },
     async getUserAddress(){
-      // const userAddress = Storage.getItem('address') || {}
-      // if(Object.keys(userAddress).length > 0){
-      //   this.address = userAddress
-      //   return
-      // }
+      const userAddress = Storage.getItem('address') || {}
+      if(Object.keys(userAddress).length > 0){
+        this.address = userAddress
+        return
+      }
       const address = await this.axios.get('shose/address/default',{
         headers:{
           token:USER_TOKEN
@@ -147,17 +150,89 @@ export default {
       Storage.setItem('address',this.address)
     },
     async getUserCoupon(){
+      const userCoupon = Storage.getItem('userCoupon') || []
+      if(userCoupon.length > 0) {
+        this.coupon = userCoupon.filter(item => item.is_use === 0 && item.expires_time*1000 > Date.now())
+        return
+      }
       const coupon = await this.axios.get('shose/coupon/get',{
         headers:{
           token:USER_TOKEN
         }
-      }).then(res => res.coupon)
-      this.coupon = coupon.map(item => {
-        if(item.is_use === 0 && item.expires_time*1000 > Date.now()){
-          item.selected = false
-          return item
-        }
+      }).then(res => res.coupon.map(item => {
+        item.selected = false
+        return item
+      }))
+      this.coupon = coupon.filter(item => item.is_use === 0 && item.expires_time*1000 > Date.now())
+      Storage.setItem('userCoupon',this.coupon)
+    },
+    async submitOrder(){
+      const token = Token.getToken()
+      if(token === ''){
+        this.$router.push('/login?url=' + encodeURIComponent('/order'))
+        return
+      }
+      const address = Storage.getItem('address') || {}
+      if(Object.keys(address).length === 0){
+        this.$showToast({
+          message:'请选择地址'
+        })
+        return
+      }
+      if(this.cart.length === 0){
+        this.$showToast({
+          message:'请选择商品'
+        })
+        return
+      }
+      const data = {}
+      data.address_id = parseInt(address.id)
+      data.goods = []
+      this.cart.forEach(item => {
+        data.goods.push({
+          goods_id:item.id,
+          count:item.buyNumber
+        })
       })
+      if(this.coupon.length > 0){
+        const selectCoupon = this.coupon.filter(item => item.selected)
+        if(selectCoupon.length > 0){
+          data.coupon_id = selectCoupon[0].id
+        }
+      }
+      try{
+        this.$showLoading()
+        const res = await this.axios.post('/shose/order',data,{
+          headers:{
+            token:token
+          }
+        })
+        if(res.pass){
+          //删除购物车中购买成功的商品
+          const cartAll = Storage.getItem('cart')
+          const cart = cartAll.filter(item => {
+            const index = this.cart.findIndex(val => item.id === val.id)
+            return index === -1
+          })
+          if(cart.length > 0){
+            Storage.stItem('cart',cart)
+          }else{
+            Storage.deleteItem('cart')
+          }
+          //清空优惠券信息
+          Storage.deleteItem('userCoupon')
+          this.$router.replace('/order/pay?id=' + res.order_id)
+        }
+      }catch(error){
+        this.$showToast({
+          message:error.message,
+          callback:() => {
+            this.$router.replace('/cart')
+          }
+        })
+      }finally{
+        this.$hideLoading()
+      }
     }
   }
 }
@@ -238,6 +313,33 @@ export default {
     bottom:0;
     background:#fff;
     @include layout-flex;
+    .order-count{
+      width:0;
+      flex:1;
+      height:100%;
+      font-size:.24rem;
+      color:$color-e;
+      @include layout-flex($justify:flex-end);
+      .order-total{
+        font-size:.32rem;
+        color:$color-b;
+        em{
+          font-size:.36rem;
+          color:$color-a;
+        }
+      }
+    }
+    .order-btn{
+      width:1.8rem;
+      height:.6rem;
+      background:$color-a;
+      color:#fff;
+      border-radius:.3rem;
+      border:none;
+      margin:0 .2rem;
+      font-size:.3rem;
+
+    }
   }
 }
 </style>

@@ -13,6 +13,7 @@ import Order from "../pages/order/index";
 import AddAddress from "../pages/add-address/index";
 import User from "../pages/user/index";
 import OrderAddress from "../pages/order-address/index";
+import OrderPay from "../pages/order-pay/index";
 import UserAddress from "../pages/user-address/index";
 import {Token} from "../utils/token"
 
@@ -90,6 +91,20 @@ const routes = [
     component:OrderAddress
   },
   {
+    path:'/order/pay',
+    beforeEnter(to, from, next) {
+      const id = to.query.id
+      if(!/^\d+$/.test(id)){
+        console.log(to.params.id)
+        next('/')
+      }else{
+        next()
+      }
+    },
+    name:'OrderPay',
+    component:OrderPay
+  },
+  {
     path:'/user/add-address',
     name:'AddAddress',
     component:AddAddress
@@ -125,7 +140,7 @@ const router = new VueRouter({
   routes
 });
 //需要做验证的路由名称
-const AUTH_ROUTER_NAME = ['Coupon','Order','UserAddress','AddAddress','OrderAddress']
+const AUTH_ROUTER_NAME = ['Coupon','Order','UserAddress','AddAddress','OrderAddress','AddAddress']
 //登陆验证
 router.beforeEach((to,from,next) => {
   if(AUTH_ROUTER_NAME.includes(to.name)){
