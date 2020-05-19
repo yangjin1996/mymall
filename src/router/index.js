@@ -137,10 +137,15 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
+  linkExactActiveClass:"active",
+  scrollBehavior(){
+    return {x:0,y:0}
+  }
+
 });
 //需要做验证的路由名称
-const AUTH_ROUTER_NAME = ['Coupon','Order','UserAddress','AddAddress','OrderAddress','AddAddress']
+const AUTH_ROUTER_NAME = ['Coupon','Order','User','UserAddress','AddAddress','OrderAddress','AddAddress']
 //登陆验证
 router.beforeEach((to,from,next) => {
   if(AUTH_ROUTER_NAME.includes(to.name)){

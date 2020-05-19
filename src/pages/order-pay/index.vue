@@ -9,6 +9,21 @@
   <div class="order-total">
     实付款：<span>￥{{order.orderTotal}}</span>
   </div>
+  <div class="order-goods">
+    <div class="flag">
+      <span class="iconfont" @click="showGoods=!showGoods">{{showGoods?'&#xe62a;':'&#xe60e;'}}</span>
+    </div>
+    <div class="cart-container" v-show="showGoods">
+    <div class="cart-item" v-for="item of order.goods" :key="item.goods_id">
+      <img :src="item.goods_img" class="cart-img"/>
+      <div class="cart-desc">
+        <div class="name">{{item.goods_name}}</div>
+        <div class="price">{{item.goods_price}}</div>
+        <div class="number">&times;{{item.buy_number}}</div>
+      </div>
+    </div>
+  </div>
+  </div>
   <div class="order-address">
     <div class="row">
       <span>收货人：</span>
@@ -51,7 +66,8 @@ export default {
     return {
       orderId:0,
       order:{},
-      payType:1
+      payType:1,
+      showGoods:false
     }
   },
   mounted(){
@@ -151,6 +167,78 @@ export default {
     &.active{
       border-radius: .2rem;
       border:1px solid $color-a;
+    }
+  }
+}
+.operation{
+  width:100%;
+  height:.6rem;
+  margin-top:1rem;
+  padding:0 .8rem;
+  box-sizing: border-box;
+  @include layout-flex($justify:space-around);
+  .operation-btn{
+    width:1.56rem;
+    height:100%;
+    box-sizing: border-box;
+    border-radius: .3rem;
+    border:1px solid $color-a;
+    color:$color-a;
+    @include layout-flex;
+    font-size: .28rem;
+  }
+}
+.order-goods{
+  width:100%;
+  padding:0 .4rem;
+  box-sizing:border-box;
+  .flag{
+    width:100%;
+    height:.6rem;
+    .iconfont{
+      float:right;
+      display: block;
+      width:.4rem;
+      height:.4rem;
+      border:1px solid $color-c;
+      border-radius:50%;
+      @include layout-flex;
+      color:$color-d;
+      font-size: .24rem;
+    }
+  }
+  .cart-container{
+    width:100%;
+    background:#fff;
+    padding:.2rem;
+    box-sizing: border-box;
+    border-radius: .1rem;
+    margin-top:.2rem;
+    .cart-item{
+      width:100%;
+      height:1.8rem;
+      @include layout-flex;
+      margin-bottom: .2rem;
+      .cart-img{
+        width:1.8rem;
+        height:1.8rem;
+      }
+      .cart-desc{
+        width:0;
+        flex:1;
+        margin-left:.2rem;
+        height:80%;
+        @include layout-flex(column,space-between,flex-start);
+        font-size:.28rem;
+          color:$color-d;
+        .number{
+          font-size:.24rem;
+          color:$color-e;
+        }
+        .name{
+          line-height:.38rem;
+        }
+      }
     }
   }
 }

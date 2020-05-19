@@ -12,10 +12,10 @@
         <span class="iconfont">&#xe60c;</span>
         <span>购物车</span>
     </router-link>
-    <div class="footer-nav">
+    <router-link tag="div" to="/user" class="footer-nav">
         <span class="iconfont">&#xe605;</span>
         <span>我的</span>
-    </div>
+    </router-link>
 </div>
 </template>
 
@@ -45,9 +45,12 @@ export default {
             font-size: .4rem;
             margin-bottom: .1rem;
         }
-        &.router-link-exact-active{
+        &.active{
             color:$color-a;
         }
+        // &.router-link-exact-active{
+        //     color:$color-a;
+        // }
     }
 }
 </style>
