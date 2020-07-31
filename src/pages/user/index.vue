@@ -8,7 +8,7 @@
         <input type="file" @change="chooseAvatr" accept="image/*">
       </div>
       <div class="user">
-        <div class="nickname">{{user.nickname}}<span class="level">lv{{user.level}}</span></div>
+        <div class="nickname" @click="$router.push('/user/info')">{{user.nickname}}<span class="level">lv{{user.level}}</span></div>
         <div class="user-points">积分：<span class="points">{{user.points}}</span></div>
       </div>
       <div class="user-sign iconfont">&#xe8a1; 签到</div>
@@ -87,6 +87,7 @@
 import CommonHeader from '@/components/Header'
 import CommonFooter from '@/components/Footer'
 import {Token} from '@/utils/token'
+import event from '@/utils/event'
 export default {
   components:{
     CommonHeader,
@@ -99,6 +100,7 @@ export default {
   },
   mounted() {
     this.getUser()
+    console.log(event);
   },
   methods: {
     async getUser(){

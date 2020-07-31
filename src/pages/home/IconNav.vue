@@ -41,7 +41,7 @@ export default {
     .nav-item{
         width:25%;
         height:50%;
-        @include layout-flex(column)
+        @include layout-flex(column);
         color:$color-b;
         font-size:.26rem;
         font-weight:550;
