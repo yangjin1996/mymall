@@ -119,9 +119,10 @@ export default {
     }
   },
   mounted(){
-    this.getGoods()
-    this.initScroll()
-    this.initCollect()
+    this.getGoods();
+    this.initScroll();
+    this.initCollect();
+    this.history();
   },
   methods:{
     async initCollect(){
@@ -131,6 +132,7 @@ export default {
         this.isCollect = false
         return
       }
+      this.$showLoading()
       this.axios.get('shose/collect/check',{
         params:{
           goods_id:this.id
@@ -140,6 +142,8 @@ export default {
         }
       }).then(res => {
         this.isCollect = res.collect === 1
+      }).finally(() => {
+        this.$hideLoading()
       })
     },
     async collect(){
@@ -190,8 +194,22 @@ export default {
         })
       })
     },
-    getGoods(){
-      this.axios.get(`api/goods?goods_id=${this.id}`).then(result => {
+    async history(){
+      const token = Token.getToken()
+      if(token !== '' && this.id > 0){
+        this.$showLoading()
+        await this.axios.post('shose/history/set',{goods_id:this.id},{
+          headers:{
+            token
+          }
+        }).finally(() => {
+          this.$hideLoading()
+        })
+      }
+    },
+    async getGoods(){
+      this.$showLoading()
+      await this.axios.get(`api/goods?goods_id=${this.id}`).then(result => {
         const {comment:commentList,commentTotal,gallery,goods} = result
         this.comment = {
           list:commentList,
@@ -202,6 +220,8 @@ export default {
       }).catch(err => {
         console.log(err)
         this.$router.replace('/goods-error')
+      }).finally(() => {
+        this.$hideLoading()
       })
     },
     addToCart(){
@@ -242,7 +262,6 @@ export default {
         })
     },
     getCoupon(){
-      
       const url = encodeURIComponent('/goods-detail/' + this.goods.goods_id)
       this.$router.push(`/coupon?url=${url}`)
     },

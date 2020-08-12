@@ -1,11 +1,11 @@
 <template>
 <div class="header-container">
   <div v-if="showIconMenu" class="icon-header">
-    <span class="iconfont cell">&#xe6b3;</span>
+    <span class="iconfont cell" @click="$router.push(url)">&#xe6b3;</span>
     <span class="iconfont cell" @click="$router.push('/cart')">&#xe60c;</span>
   </div>
   <div v-else class="menu-header border-bottom" :style="`opacity:${opacity}`">
-    <span class="iconfont cell">&#xe6b3;</span>
+    <span class="iconfont cell" @click="$router.push(url)">&#xe6b3;</span>
       <ul class="header-tab">
         <li :class="{active:scrollTab==='goods'}" @click="changeTab('goods')">商品</li>
         <li :class="{active:scrollTab==='comment'}" @click="changeTab('comment')">评论</li>
@@ -30,6 +30,16 @@ export default {
     scrollTab:{
       type:String
     }
+  },
+  data() {
+    return {
+      url:'/'
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.url = from.path
+    })
   },
   methods:{
     changeTab(tabName){

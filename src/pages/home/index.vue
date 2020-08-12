@@ -2,19 +2,22 @@
     <div class="page" ref="page">
         <common-header></common-header>
         <search-bar></search-bar>
-        <home-swiper :swiperList="swiperList"></home-swiper>
-        <icon-nav :navList="navList"></icon-nav>
-        <recommend :recommendList="recommendList"></recommend>
-        <sales :salesList="salesList"></sales>
-        <new-goods :newGoodsList="newGoodsList"></new-goods>
-        <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="scrollDistance">
-            <goods-list :goodsList="goodsList"></goods-list>
+        <div class="wrapper">
+            <home-swiper :swiperList="swiperList"></home-swiper>
+            <icon-nav :navList="navList"></icon-nav>
+            <recommend :recommendList="recommendList"></recommend>
+            <sales :salesList="salesList"></sales>
+            <new-goods :newGoodsList="newGoodsList"></new-goods>
+            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="scrollDistance">
+                <goods-list :goodsList="goodsList"></goods-list>
+            </div>
         </div>
         <common-footer ref="footer"></common-footer>
     </div>
 </template>
 
 <script>
+// import BScroll from 'better-scroll'
 import infiniteScroll from 'vue-infinite-scroll'
 import CommonHeader from '@/components/Header'
 import CommonFooter from '@/components/Footer'
@@ -64,6 +67,18 @@ export default {
         await this.getRecommend()
         await this.getSales()
         await this.getNewGoods()
+        // await new BScroll('.wrapper', {
+        //     scrollY: true,
+        //     scrollX: false,
+        //     snap: {  // 滑动切换的一些配置
+        //         speed: 800,  // 滑动切换的速度
+        //         easing: {  // 滑动切换的动画效果
+        //         style: 'ease-in'
+        //         },
+        //         threshold: 0.5,  // 滑动切换到超过一半时切换到下一屏
+        //         stepX: 600,  // 横向切换距离为轮播图宽度
+        //     }
+        // });
         this.$hideLoading()
     },
     methods: {
@@ -126,6 +141,10 @@ export default {
     width:100%;
     min-height:100%;
     background-color:$color-c;
+    // .wrapper{
+    //     height:10rem;
+    //     overflow: hidden;
+    // }
     .swiper-container-ios{
         margin-top:$page-margin-top;
     }

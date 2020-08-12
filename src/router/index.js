@@ -16,6 +16,7 @@ import UserInfo from "../pages/user-info/index";
 import OrderAddress from "../pages/order-address/index";
 import OrderPay from "../pages/order-pay/index";
 import UserAddress from "../pages/user-address/index";
+import UserSign from "../pages/user-sign/index";
 import {Token} from "../utils/token"
 
 Vue.use(VueRouter);
@@ -119,6 +120,11 @@ const routes = [
     path:"/order",
     name:"Order",
     component:Order
+  },
+	{
+    path:"/user-sign",
+    name:"UserSign",
+    component:UserSign
   },
   {
     path: "/goods-detail/:id",

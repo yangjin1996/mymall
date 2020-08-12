@@ -73,8 +73,6 @@ export default {
           return item
         }
       })
-      console.log(this.couponList);
-      
     },
     async getUserPoints(){
       this.points = await this.axios.get('shose/user-points',{

@@ -11,7 +11,7 @@
         <div class="nickname" @click="$router.push('/user/info')">{{user.nickname}}<span class="level">lv{{user.level}}</span></div>
         <div class="user-points">积分：<span class="points">{{user.points}}</span></div>
       </div>
-      <div class="user-sign iconfont">&#xe8a1; 签到</div>
+      <div class="user-sign iconfont" @click="$router.push('/user-sign')">&#xe8a1; 签到</div>
     </div>
     <div class="order-menu-wrapper">
       <div class="order-menu">
@@ -100,17 +100,18 @@ export default {
   },
   mounted() {
     this.getUser()
-    console.log(event);
   },
   methods: {
     async getUser(){
       const token = Token.getToken()
+      this.$showLoading()
       const user = await this.axios.get('api/user',{
         headers:{
           token
         }
       })
       this.user = user
+      this.$hideLoading()
     },
     chooseAvatr(e){
       if(e.target.files.length > 0){
