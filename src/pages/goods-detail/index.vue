@@ -1,6 +1,6 @@
 <template>
 <div>
-  <detail-header :showIconMenu="showIconMenu" :opacity="headerOpacity" :scrollTab="scrollTab" @tab="changeTab"></detail-header>
+  <detail-header :url="url" :showIconMenu="showIconMenu" :opacity="headerOpacity" :scrollTab="scrollTab" @tab="changeTab"></detail-header>
   <div class="page" ref="page">
     <div>
       <div class="goods">
@@ -104,6 +104,7 @@ export default {
       scrollTab:'goods',
       showIconMenu:true,
       headerOpacity:0,
+      url:'/',
       comment:{},
       gallery:[],
       goods:{},
@@ -117,6 +118,11 @@ export default {
         scrollbar:false
       }
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.url = from.path
+    })
   },
   mounted(){
     this.getGoods();

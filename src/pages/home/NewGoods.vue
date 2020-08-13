@@ -2,14 +2,14 @@
 <container title="新品优选" morePath="/goodsList">
     <template v-slot:content>
         <div class="goods-list">
-            <div class="goods-item border" v-for="item of list" :key="item.id">
+            <router-link tag="div" class="goods-item border" v-for="item of list" :key="item.id" :to="`/goods-detail/${item.id}`">
                 <img v-lazy="item.img" class="goods-img">
                 <div class="goods-info">
                     <div class="goods-name">{{item.name}}</div>
                     <div class="goods-price">￥{{item.price|formatPrice}}</div>
                     <cart-btn font-size=".32rem" :goods="item"></cart-btn>
                 </div>
-            </div>
+            </router-link>
         </div>
     </template>
 </container>

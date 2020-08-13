@@ -17,6 +17,8 @@ import OrderAddress from "../pages/order-address/index";
 import OrderPay from "../pages/order-pay/index";
 import UserAddress from "../pages/user-address/index";
 import UserSign from "../pages/user-sign/index";
+import UserFootprient from "../pages/user-footprient/index";
+import UserCollection from "../pages/user-collection/index";
 import {Token} from "../utils/token"
 
 Vue.use(VueRouter);
@@ -127,11 +129,20 @@ const routes = [
     component:UserSign
   },
   {
+    path:"/user-footprient",
+    name:"UserFootprient",
+    component:UserFootprient
+  },
+  {
+    path:"/user-collection",
+    name:"UserCollection",
+    component:UserCollection
+  },
+  {
     path: "/goods-detail/:id",
     beforeEnter(to, from, next) {
       const id = to.params.id
       if(!/^\d+$/.test(id)){
-        console.log(to.params.id)
         next(from.path)
       }else{
         next()
@@ -163,9 +174,7 @@ router.beforeEach((to,from,next) => {
   if(AUTH_ROUTER_NAME.includes(to.name)){
     const token = Token.getToken()
     if(token === ''){
-      console.log(from);
-      console.log(to);
-      let url
+      let url;
       if(to.query.loginRedirect !== ''){
         url = decodeURIComponent(to.query.loginRedirect)
       }else{

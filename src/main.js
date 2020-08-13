@@ -8,6 +8,7 @@ import store from "./store";
 import Loading from "./plugin/loading"
 import Modal from "./plugin/modal"
 import Toast from './plugin/toast'
+import Tips from './plugin/tips'
 
 axios.defaults.baseURL = '/api/';
 axios.defaults.timeout = 10000;
@@ -20,6 +21,7 @@ Vue.use(VueLazyload,{
 Vue.use(Loading)
 Vue.use(Modal)
 Vue.use(Toast)
+Vue.use(Tips)
 Vue.config.productionTip = false;
 /*对请求的数据进行处理，use里有两个参数，分别是成功和失败时执行的函数，
  axios网址：https://www.npmjs.com/package/axios */

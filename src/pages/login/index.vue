@@ -75,7 +75,7 @@ export default {
     this.loginRedirect = decodeURIComponent(this.$route.query.url) || '/'
   },
   methods:{
-    login(){
+    async login(){
       const data = {
         username:this.username,
         password:this.password
@@ -84,14 +84,16 @@ export default {
       if(!validate){
         return
       }
-      this.axios.post('shose/user/login',data).then(res => {
+      this.$showLoading();
+      await this.axios.post('shose/user/login',data).then(res => {
         const {token} = res
         Token.setToken(token)
         this.$router.push(this.loginRedirect)
-        // console.log(this.loginRedirect)
         //跳转页面
       }).catch(err => {
         this.$showToast(err.message)
+      }).finally(() => {
+        this.$hideLoading();
       })
     },
     validate(data){

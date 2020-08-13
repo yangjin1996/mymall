@@ -6,11 +6,11 @@
   </div>
   <div v-else class="menu-header border-bottom" :style="`opacity:${opacity}`">
     <span class="iconfont cell" @click="$router.push(url)">&#xe6b3;</span>
-      <ul class="header-tab">
-        <li :class="{active:scrollTab==='goods'}" @click="changeTab('goods')">商品</li>
-        <li :class="{active:scrollTab==='comment'}" @click="changeTab('comment')">评论</li>
-        <li :class="{active:scrollTab==='detail'}" @click="changeTab('detail')">详情</li>
-      </ul>
+    <ul class="header-tab">
+      <li :class="{active:scrollTab==='goods'}" @click="changeTab('goods')">商品</li>
+      <li :class="{active:scrollTab==='comment'}" @click="changeTab('comment')">评论</li>
+      <li :class="{active:scrollTab==='detail'}" @click="changeTab('detail')">详情</li>
+    </ul>
     <span class="iconfont cell" @click="$router.push('/cart')">&#xe60c;</span>
   </div>
 </div>
@@ -29,17 +29,11 @@ export default {
     },
     scrollTab:{
       type:String
+    },
+    url:{
+      type:String,
+      default:'/'
     }
-  },
-  data() {
-    return {
-      url:'/'
-    }
-  },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.url = from.path
-    })
   },
   methods:{
     changeTab(tabName){

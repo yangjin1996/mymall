@@ -39,7 +39,6 @@ export default {
             const index = cart.findIndex(item => {
                 return item.id === goods.id
             });
-            console.log(cart)
             if(index === -1){
                 const  cartData = {
                     ...goods,

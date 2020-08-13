@@ -48,9 +48,6 @@ export default {
         &.active{
             color:$color-a;
         }
-        // &.router-link-exact-active{
-        //     color:$color-a;
-        // }
     }
 }
 </style>

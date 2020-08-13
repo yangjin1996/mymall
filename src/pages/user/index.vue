@@ -49,7 +49,7 @@
       </div>
       <div class="navigate-cell border-bottom">
         <span class="iconfont icon">&#xe613;</span>
-        <div class="navigate-text">我的收藏</div>
+        <div class="navigate-text" @click="$router.push('/user-collection')">我的收藏</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
       <div class="navigate-cell border-bottom">
@@ -59,7 +59,7 @@
       </div>
       <div class="navigate-cell border-bottom">
         <span class="iconfont icon">&#xe73b;</span>
-        <div class="navigate-text">我的足迹</div>
+        <div class="navigate-text" @click="$router.push('/user-footprient')">我的足迹</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
       <div class="navigate-cell border-bottom">
