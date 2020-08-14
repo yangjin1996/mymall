@@ -54,7 +54,7 @@
       </div>
       <div class="navigate-cell border-bottom">
         <span class="iconfont icon">&#xe622;</span>
-        <div class="navigate-text">我的地址</div>
+        <div class="navigate-text" @click="$router.push('/user/address')">我的地址</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
       <div class="navigate-cell border-bottom">
@@ -64,7 +64,7 @@
       </div>
       <div class="navigate-cell border-bottom">
         <span class="iconfont icon">&#xe769;</span>
-        <div class="navigate-text">我的卡券</div>
+        <div class="navigate-text" @click="$router.push('/coupon')">我的卡券</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
       <div class="navigate-cell border-bottom">

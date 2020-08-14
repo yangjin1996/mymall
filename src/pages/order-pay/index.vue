@@ -92,7 +92,6 @@ export default {
       }).then(res => res.order)
       order.statusInfo = getOrderStatus(order.status)
       order.orderTotal = formatPrice(order.total_price)
-      // console.log(order)
       this.order = order
     }
   },

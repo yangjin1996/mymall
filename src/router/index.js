@@ -9,6 +9,8 @@ import Cart from "../pages/cart/index";
 import Login from "../pages/login/index";
 import Register from "../pages/register/index";
 import Coupon from "../pages/coupon/index";
+import Search from "../pages/search/index";
+import SearchList from "../pages/search-list/index";
 import Order from "../pages/order/index";
 import AddAddress from "../pages/add-address/index";
 import User from "../pages/user/index";
@@ -38,6 +40,16 @@ const routes = [
     path: "/cart",
     name: "Cart",
     component: Cart
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: Search
+  },
+  {
+    path: "/search-list",
+    name: "SearchList",
+    component: SearchList
   },
   {
     path: "/goods-list",

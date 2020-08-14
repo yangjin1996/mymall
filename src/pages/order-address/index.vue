@@ -1,21 +1,23 @@
 <template>
-<div class="page">
-  <common-header title="选择地址" :back="backUrl"></common-header>
-  <div class="address-list">
-    <div class="address-item border-bottom" :class="{selected:item.is_default}" v-for="item of address" :key="item.id" @click="chooseAddress(item.id)">
-      <div class="address-content">
-        <div class="address-name">
-          <span>收货人:{{item.name}}</span>
-          <span>{{item.phone}}</span>
+<div class="wrapper">
+  <div class="page">
+    <common-header title="选择地址" :back="backUrl"></common-header>
+    <div class="address-list">
+      <div class="address-item border-bottom" :class="{selected:item.is_default}" v-for="item of address" :key="item.id" @click="chooseAddress(item)">
+        <div class="address-content">
+          <div class="address-name">
+            <span>收货人:{{item.name}}</span>
+            <span>{{item.phone}}</span>
+          </div>
+          <div class="address-detail">
+            收货地址:{{item.detail}}
+          </div>
         </div>
-        <div class="address-detail">
-          收货地址:{{item.detail}}
-        </div>
+        <span class="iconfont">√</span>
       </div>
-      <span class="iconfont">√</span>
     </div>
+    <div class="add-address" v-if="showAddAddress" @click="$router.push(`/user/add-address?url=${backUrl}`)">添加新地址</div>
   </div>
-  <div class="add-address" v-if="showAddAddress" @click="$router.push(`/user/add-address?url=${backUrl}`)">添加新地址</div>
 </div>
 </template>
 
@@ -47,30 +49,30 @@ export default {
       this.getUserAddress()
   },
   methods: {
-    chooseAddress(selectAddressId){
-      const index = this.address.findIndex(item => item.id === selectAddressId)
-      // this.address.forEach(item => {
-      //   item.is_default = 0
-      // })
-      // this.address[selectAddressId].is_default = 1
-      // console.log(this.address);
-      // console.log(this.address[selectAddressId]);
-      
+    chooseAddress(items){
+      const index = this.address.findIndex(i => i.id === items.id)
+      this.address.forEach(res => {
+        res.is_default = 0
+      })
+      this.address[index].is_default = 1
+      items.is_default = true
       if(index > -1){
         Storage.setItem('address',this.address[index])
         this.$router.push('/order')
       }
     },
     async getUserAddress(){
+      this.$showLoading()
         this.address = await this.axios.get('shose/address',{
             headers:{
                 token:USER_TOKEN
             }
         }).then(res => res.address.map(item => {
-            item.detail = `${item.province}${item.city}${item.area}${item.address}`
-            item.selected = item.id === this.addressId
-            return item
-          }))
+          item.detail = `${item.province}${item.city}${item.area}${item.address}`
+          item.selected = item.id === this.addressId
+          this.$hideLoading()
+          return item
+        }))
         this.showAddAddress = (MAX_ADDRESS_NUM - this.address.length) > 0
     }
   },
@@ -79,10 +81,15 @@ export default {
 <style lang='scss' scoped>
 
 @import '~@/assets/scss/global';
+.wrapper{
+  width:100vw;
+  height:100vh;
+  background-color: #eee;
+}
 .page{
   width:100%;
   height:100%;
-  padding:$header-h 0 .9rem;
+  padding-top: .9rem;
   box-sizing: border-box;
   background:$color-c;
   .add-address{
@@ -129,7 +136,7 @@ export default {
         height:100%;
       }
       &.selected{
-        background:#5e6b85;
+        background:#ff7c76;
         .address-content{
           color:#fff;
         }

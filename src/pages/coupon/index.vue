@@ -25,7 +25,6 @@ import CommonHeader from "@/components/Header"
 import {Token} from "@/utils/token"
 import {filters} from "@/utils/mixins"
 import {dateFormat,formatPrice} from "@/utils/function"
-const USER_TOKEN = Token.getToken()
 
 export default {
   components:{
@@ -45,14 +44,21 @@ export default {
       points:0
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.backUrl = from.path
+    })
+  },
   async mounted(){
-    this.backUrl = this.$route.query.url || '/'
     await this.getUserPoints()
     await this.getCouponList()
   },
   methods:{
     async getCouponList(){
-      const couponList = await this.axios.get('shose/coupon')
+      const USER_TOKEN = Token.getToken();
+      this.$showLoading();
+      const couponList = await this.axios.get('shose/coupon');
+      this.$hideLoading();
       this.couponList = couponList.map(item =>{
         if(item.is_use === 1) {
           item.limit_total = formatPrice(item.limit_total)
@@ -75,31 +81,45 @@ export default {
       })
     },
     async getUserPoints(){
+      const USER_TOKEN = Token.getToken();
+      this.$showLoading()
       this.points = await this.axios.get('shose/user-points',{
         headers:{
           token:USER_TOKEN
         }
-      }).then(res => res.points)
+      }).then(res => res.points).finally(() => this.$hideLoading())
     },
     exchange (couponId){
       const index = this.couponList.findIndex(item => item.id === couponId)
       if(index > -1){
         const coupon = this.couponList[index]
         if(coupon.points > 0 && coupon.points > this.points){
-          this.$showToast('积分不足')
+          this.$showToast({
+            message: '积分不足',
+            mask:false
+          })
           return
         }
         this.$showLoading()
-        this.axios.post('shose/coupon/get',{
+        const USER_TOKEN = Token.getToken();
+        this.axios.post('shose/coupon/get',
+        {
           coupon_id:couponId
-        },{
+        },
+        {
           headers:{
             token:USER_TOKEN
           }
         }).then(() => {
-          this.$showToast('兑换成功')
+          this.$showToast({
+            message:'兑换成功',
+            mask:false
+          })
         }).catch(err => {
-          this.$showToast(err.message || '兑换失败')
+          this.$showToast({
+            message: err.message || '兑换失败',
+            mask:false
+          })
         }).finally(() => {
           this.$hideLoading()
         })
@@ -139,7 +159,7 @@ export default {
     height:auto;
     padding: 0 .2rem;
     box-sizing: border-box;
-    margin-top:.9rem;
+    margin-top:.4rem;
     .coupon-item{
       width:100%;
       height:1.4rem;

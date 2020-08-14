@@ -1,5 +1,5 @@
 <template>
-    <transition>
+    <transition name="fade">
         <div class="container" v-if="visible">
             <div class="modal">
                 <div class="modal-title" v-if="title !== ''">{{title}}</div>

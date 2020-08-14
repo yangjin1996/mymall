@@ -46,31 +46,31 @@ import addressValidator from '@/validate/address'
 import {validate} from '@/utils/function'
 import {Token} from '@/utils/token'
 import {Storage} from '@/utils/storage'
-const USER_TOKEN =Token.getToken()
 export default {
   components:{
     CommonHeader,
     VDistpicker
   },
   beforeRouteEnter (to, from, next) {
-    // console.log(to);
       next(vm => {
-          vm.backUrl = to.query.url || from.path
+          vm.backUrl = from.path
       })
   },
   data() {
-      return {
-          backUrl:'',
-          showChooseAddress:false,
-          region:[],
-          name:'',
-          phone:'',
-          address:'',
-          isDefault:false
-      }
+    return {
+      backUrl:'',
+      showChooseAddress:false,
+      region:[],
+      name:'',
+      phone:'',
+      address:'',
+      isDefault:false,
+      addressId:0
+    }
   },
   mounted() {
-      
+    this.getAddress ();
+
   },
   computed:{
     regionText(){
@@ -82,6 +82,29 @@ export default {
     }
   },
   methods: {
+    async getAddress () {
+      const USER_TOKEN =Token.getToken();
+      const addressId = parseInt(this.$route.query.url);
+      this.addressId = addressId;
+      if(addressId > 0){
+        this.$showLoading();
+        let add = await this.axios.get('shose/address',{
+          params:{
+            id:addressId
+          },
+          headers:{
+            token:USER_TOKEN
+          }
+        })
+        add = add.address;
+        this.$hideLoading();
+        this.name = add.name;
+        this.phone = add.phone;
+        this.address = add.address;
+        this.region = [add.province,add.city,add.area],
+        this.isDefault = add.is_default === 1
+      }
+    },
     saveAddress(){
       const data = {
         name:this.name,
@@ -100,25 +123,38 @@ export default {
         return
       }
       this.$showLoading()
-      this.axios.post('shose/address/add',data,{
+      const USER_TOKEN =Token.getToken();
+      let url;
+      if(this.addressId > 0){
+        url = 'shose/address/update';
+        data.id = this.addressId;
+      }else{
+        url = 'shose/address/add';
+      }
+      this.axios.post(url,data,{
         headers:{
           token:USER_TOKEN
         }
       }).then((res) => {
-        // const addressId = res.address_id
-        // this.$router.push(this.backUrl+'?selectAddressId'+addressId)
-        data.id = res.address_id
-        Storage.setItem('address',data)
-        this.$router.push('/order')
+        if(this.addressId > 0){
+          this.$router.replace(this.backUrl)
+        }else{
+          data.id = res.address_id
+          Storage.setItem('address',data)
+          this.$router.replace(this.backUrl)
+          this.$showToast({
+            message:'添加成功',
+            mask:false
+          })
+        }
       }).catch(err => {
-        this.$showToast({
-          message:err.message
-        })
+        console.log(err)
       }).finally(() => {
         this.$hideLoading()
       })
     },
     selectAddress(data){
+      this.newreagin = '';
       this.region = [
         data.province.value,
         data.city.value,
