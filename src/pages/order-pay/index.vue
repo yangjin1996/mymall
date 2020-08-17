@@ -48,7 +48,7 @@
   </div>
   <div class="operation">
     <span class="operation-btn" v-if="order.status <= 1">支付订单</span>
-    <span class="operation-btn" v-else>查看订单</span>
+    <span class="operation-btn" v-else @click.stop="$router.push('/order-detail?id=' + order.id)">查看订单</span>
     <router-link to="/" class="operation-btn">返回首页</router-link>
   </div>
 </div>
@@ -82,6 +82,7 @@ export default {
   methods: {
     async getOrder(){
       const token = Token.getToken()
+      this.$showLoading();
       const order = await this.axios.get('shose/order',{
         params:{
           id:this.orderId
@@ -93,6 +94,7 @@ export default {
       order.statusInfo = getOrderStatus(order.status)
       order.orderTotal = formatPrice(order.total_price)
       this.order = order
+      this.$hideLoading();
     }
   },
 }

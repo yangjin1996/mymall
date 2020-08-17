@@ -65,12 +65,12 @@ export default {
   },
   methods:{
     submitCart(){
-      // if(this.cartNum === 0){
-      //   this.$showToast({
-      //     message:"至少选择一个商品"
-      //   })
-      //   return
-      // }
+      if(this.cartNum === 0){
+        this.$showToast({
+          message:"至少选择一个商品"
+        })
+        return
+      }
       this.$router.push('/order?loginRedirect=' + encodeURIComponent('/order'))
     },
     // toGoodsDetail(goodsId){

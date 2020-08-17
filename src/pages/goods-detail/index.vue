@@ -66,8 +66,10 @@
         首页
       </div>
       <div class="footer-cell">
-        <span class="iconfont">&#xe62b;</span>
-        客服
+        <a class="a" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2367148&site=qq&menu=yes">
+          <span class="iconfont">&#xe62b;</span>
+          客服
+        </a>
       </div>
       <div class="footer-cell" :class="{collect:isCollect}" @click="collect">
         <span class="iconfont">&#xe60b;</span>
@@ -75,7 +77,7 @@
       </div>
     </div>
     <div class="footer-right">
-      <div class="buy">立即购买</div>
+      <div class="buy" @click="submitCart">立即购买</div>
       <div class="cart" @click="addToCart">加入购物车</div>
     </div>
   </div>
@@ -271,6 +273,22 @@ export default {
       const url = encodeURIComponent('/goods-detail/' + this.goods.goods_id)
       this.$router.push(`/coupon?url=${url}`)
     },
+    submitCart(){
+      let data = {
+        id:this.goods.goods_id,
+        price:this.goods.goods_price,
+        img:this.goods.goods_img,
+        name:this.goods.goods_name,
+        buyNumber:1
+      }
+      this.$router.push({
+        path:'/order',
+        query:{
+          data:data
+        }
+      })
+      // this.$router.push('/order?loginRedirect=' + encodeURIComponent('/order'))
+    },
   }
 }
 </script>
@@ -392,6 +410,21 @@ export default {
       }
       &.collect{
         color:rgb(189, 11, 11);
+      }
+    }
+    .footer-cell{
+      .a{
+        display: inline-block;
+        width:100%;
+        height:1.2rem;
+        @include layout-flex(column);
+        font-size: .26rem;
+        .iconfont{
+          margin-bottom:.1rem;
+        }
+        &.collect{
+          color:rgb(189, 11, 11);
+        }
       }
     }
   }

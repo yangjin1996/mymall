@@ -15,24 +15,24 @@
     </div>
     <div class="order-menu-wrapper">
       <div class="order-menu">
-        <div class="title">
+        <div class="title" @click="$router.push('/user-order?status=' + -1)">
           我的订单
           <router-link to="/user" class="iconfont">查看更多 &#xe62a;</router-link>
         </div>
         <div class="menu-list">
-          <div class="menu-cell">
+          <div class="menu-cell" @click="$router.push('/user-order?status=' + 1)">
             <span class="iconfont">&#xe60a;</span>
             待付款
           </div>
-          <div class="menu-cell">
+          <div class="menu-cell" @click="$router.push('/user-order?status=' + 2)">
             <span class="iconfont">&#xe612;</span>
             待发货
           </div>
-          <div class="menu-cell">
+          <div class="menu-cell" @click="$router.push('/user-order?status=' + 3)">
             <span class="iconfont">&#xe611;</span>
             待收货
           </div>
-          <div class="menu-cell">
+          <div class="menu-cell" @click="$router.push('/user-order?status=' + 4)">
             <span class="iconfont">&#xe754;</span>
             已完成
           </div>

@@ -44,7 +44,9 @@ export default {
   },
   data(){
     return {
+      fromPath:'',
       address:{},
+      datas:{},
       cart:[],
       coupon:[],
       addressId:0,
@@ -55,16 +57,19 @@ export default {
       actualPayment:0
     }
   },
-  // watch: {
-  //   async addressId(){
-  //     this.$showLoading()
-  //     await this.getUserAddress()
-  //     this.$hideLoading()
-  //   }
-  // },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if(from.name === 'Cart'){
+        vm.fromPath = 'Cart'
+      }else if(from.name === 'GoodsDetail'){
+        vm.fromPath = 'GoodsDstail'
+      }
+      vm.datas = to.query.data
+      vm.initCart()
+    })
+  },
   async mounted(){
     this.addressId = this.$route.query.selectAddressId || 0
-    this.initCart()
     try{
       this.$showLoading()
       // const address = Storage.getItem('address') || {}
@@ -107,30 +112,35 @@ export default {
       })
     },
     initCart(){
-      let cartAll = Storage.getItem('cart')
-      let total = 0
-      let cartNum = 0
-      let cart = []
-      cartAll.map(item => {
-        if(item.selected){
-          total += item.buyNumber * item.price
-          cartNum++
-          cart.push(item)
-        }
-      })
-      if(cart.length === 0){
-        this.$showToast({
-          message:"至少选择一个商品",
-          callback:() => {
-            this.$router.push('/cart')
+      if(this.fromPath === 'Cart'){
+        let cartAll = Storage.getItem('cart')
+        let total = 0
+        let cartNum = 0
+        let cart = []
+        cartAll.map(item => {
+          if(item.selected){
+            total += item.buyNumber * item.price
+            cartNum++
+            cart.push(item)
           }
         })
-        return
+        if(cart.length === 0){
+          this.$showToast({
+            message:"至少选择一个商品",
+            callback:() => {
+              this.$router.push('/cart')
+            }
+          })
+          return
+        }
+        this.cart = cart
+        this.total = total
+        this.cartNum = cartNum
+        this.actualPayment = total
+      }else if(this.fromPath === 'GoodsDetail'){
+        this.cart=[this.datas];
+        this.actualPayment = parseFloat(this.datas.price)
       }
-      this.cart = cart
-      this.total = total
-      this.cartNum = cartNum
-      this.actualPayment = total
     },
     async getUserAddress(){
       const userAddress = Storage.getItem('address') || {}
@@ -241,7 +251,7 @@ export default {
 @import '~@/assets/scss/global';
 .page{
   width:100%;
-  height:100%;
+  height:100vh;
   padding:$header-h .2rem .9rem;
   box-sizing: border-box;
   background:$color-c;
