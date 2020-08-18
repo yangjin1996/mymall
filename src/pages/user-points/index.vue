@@ -1,24 +1,24 @@
 <template>
 <div class="page">
-  <common-header title="我的消息" back="/user"></common-header>
-  <div class="new-page" ref="newsPage">
-    <div class="box">
-      <ul class="day-news" v-for="item of newsList" :key="item.id">
-        <li class="time">
-          <div class="title">{{item.time|dateFormat}}</div>
-        </li>
-        <li class="news">
-          <span class="notice">{{item.title}}</span>
-          <p class="text">{{item.content}}</p>
-        </li>
-      </ul>
-    </div>
+  <common-header title="我的积分" back="/user"></common-header>
+  <div v-show="pointsList.length">
+    <ul class="day-news" v-for="item of pointsList" :key="item.id">
+      <li class="time">
+        <div class="title">{{item.add_time|dateFormat}}</div>
+      </li>
+      <li class="news">
+        <span class="notice">{{item.content}}</span>
+        <p class="text">{{item.type === 1 ? '+' : '-'}}{{item.points}}积分</p>
+      </li>
+    </ul>
+  </div>
+  <div class="no-points" v-show="!pointsList.length">
+    没有查询到结果
   </div>
 </div>
 </template>
 
 <script>
-import BScroll from 'better-scroll'
 import CommonHeader from '@/components/Header'
 import {dateFormat} from '@/utils/function'
 import {Token} from "@/utils/token"
@@ -28,7 +28,10 @@ export default {
   },
   data() {
     return {
-      newsList:[]
+      page:1,
+      count:8,
+      status:-1,
+      pointsList:[]
     }
   },
   filters:{
@@ -37,34 +40,24 @@ export default {
     }
   },
   mounted(){
-    this.getNews();
-    this.initScroll();
+    this.getpoints()
   },
   methods: {
-    async getNews(){
+    async getpoints(){
       const token = Token.getToken();
       this.$showLoading();
-      const news = await this.axios.get('shose/notice',{
+      const points = await this.axios.get('shose/user/points',{
         headers:{
           token
         },
         params:{
           pages:1,
-          count:8
+          count:8,
+          type:this.status
         }
       })
-      this.newsList = news.list;
+      this.pointsList = points.list;
       this.$hideLoading();
-    },
-    initScroll(){
-      const html = document.querySelector('html')
-      const fontSize = window.innerWidth / 7.5
-      html.style.fontSize = fontSize + 'px'
-      this.$refs.newsPage.style.height = window.innerHeight - fontSize*0.9 + 'px'
-      new BScroll('.new-page',{
-        scrollY: true,
-        click: true,
-      })
     }
   },
 }
@@ -73,16 +66,16 @@ export default {
 @import '~@/assets/scss/global';
 .page{
   width:100%;
-  height:100%;
-  padding:$header-h 0 .2rem;
+  height:100vh;
+  padding:$header-h 0 .9rem;
   box-sizing: border-box;
   background:#fff;
-  .new-page{
+  .no-points{
     width:100%;
-    overflow: hidden;
-    .box{
-      margin-bottom: .2rem;
-    }
+    height:2rem;
+    font-size: .28rem;
+    color:#999;
+    @include layout-flex;
   }
   .day-news{
     width:100%;
@@ -104,10 +97,10 @@ export default {
       border-radius: .1rem;
       background-color: #eee;
       .notice{
-        font-size: .28rem;
+        font-size: .3rem;
       }
       .text{
-        font-size: .24rem;
+        font-size: .28rem;
       }
     }
   }

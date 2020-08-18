@@ -114,6 +114,11 @@ export default {
       if(this.cart[index].buyNumber > 1){
         this.cart[index].buyNumber--
         this.countCart()
+      }else{
+        this.$showToast({
+          message:'不能再减少了哦~',
+          mask:false
+        })
       }
     },
     deleteCart(goodsId){
@@ -176,11 +181,9 @@ export default {
   display: flex;
   align-items: center;
   position: relative;
-  transition:all .5s;
 }
 .cart-item.cart-delete{
   left:-1.6rem;
-  transition: all .5s;
 }
 .delete{
   position: absolute;
@@ -306,4 +309,11 @@ export default {
   background:url(/images/checkbox@selected.png) no-repeat left bottom;
   background-size:contain;
 }
+// .del-enter-active,
+// .del-leave-active{
+//     transition:opacity .5s;
+// }
+// .del-enter,.del-leave-to{
+//     opacity:0;
+// }
 </style>

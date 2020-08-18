@@ -12,7 +12,7 @@
                 <goods-list :goodsList="goodsList"></goods-list>
             </div>
         </div>
-        <common-footer ref="footer"></common-footer>
+        <common-footer></common-footer>
     </div>
 </template>
 

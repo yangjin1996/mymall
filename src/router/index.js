@@ -1,29 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../pages/home/index.vue";
-import Category from "../pages/category/index";
-import GoodsList from "../pages/goods-list/index"
-import GoodsDetail from "../pages/goods-detail/index";
-import GoodsError from "../pages/goods-notfound/index";
-import Cart from "../pages/cart/index";
-import Login from "../pages/login/index";
-import Register from "../pages/register/index";
-import Coupon from "../pages/coupon/index";
-import Search from "../pages/search/index";
-import SearchList from "../pages/search-list/index";
-import Order from "../pages/order/index";
-import AddAddress from "../pages/add-address/index";
-import User from "../pages/user/index";
-import UserInfo from "../pages/user-info/index";
-import OrderAddress from "../pages/order-address/index";
-import OrderPay from "../pages/order-pay/index";
-import OrderDetail from "../pages/order-detail/index";
-import UserAddress from "../pages/user-address/index";
-import UserOrder from "../pages/user-order/index";
-import UserNotice from "../pages/user-notice/index";
-import UserSign from "../pages/user-sign/index";
-import UserFootprient from "../pages/user-footprient/index";
-import UserCollection from "../pages/user-collection/index";
 import {Token} from "../utils/token"
 
 Vue.use(VueRouter);
@@ -37,22 +14,22 @@ const routes = [
   {
     path: "/category",
     name: "Category",
-    component: Category
+    component: () => import('../pages/category/index')
   },
   {
     path: "/cart",
     name: "Cart",
-    component: Cart
+    component: () => import('../pages/cart/index')
   },
   {
     path: "/search",
     name: "Search",
-    component: Search
+    component: () => import('../pages/search/index')
   },
   {
     path: "/search-list",
     name: "SearchList",
-    component: SearchList
+    component: () => import('../pages/search-list/index')
   },
   {
     path: "/goods-list",
@@ -68,22 +45,22 @@ const routes = [
         cname
       }
     },
-    component: GoodsList
+    component: () => import('../pages/category/index')
   },
   {
     path:"goods-error",
     name:"GoodsError",
-    component:GoodsError
+    component:() => import('../pages/goods-notfound/index')
   },
   {
     path:"/login",
     name:"Loginin",
-    component:Login
+    component:() => import('../pages/login/index')
   },
   {
     path:"/register",
     name:"Register",
-    component:Register
+    component:() => import('../pages/register/index')
   },
   {
     path:"/goods-detail",
@@ -92,42 +69,42 @@ const routes = [
   {
     path:"/coupon",
     name:"Coupon",
-    component:Coupon
+    component:() => import('../pages/coupon/index')
   },
   {
     path:'/user',
     name:'User',
-    component:User
+    component:() => import('../pages/user/index')
   },
   {
     path:'/user/info',
     name:'UserInfo',
-    component:UserInfo
+    component:() => import('../pages/user-info/index')
   },
   {
     path:'/user/address',
     name:'UserAddress',
-    component:UserAddress
+    component:() => import('../pages/coupon/index')
   },
   {
     path:'/user-order',
     name:'UserOrder',
-    component:UserOrder
+    component:() => import('../pages/user-order/index')
   },
   {
     path:'/user-notice',
     name:'UserNotice',
-    component:UserNotice
+    component:() => import('../pages/user-notice/index')
   },
   {
     path:'/order/address',
     name:'OrderAddress',
-    component:OrderAddress
+    component:() => import('../pages/order-address/index')
   },
   {
     path:'/order-detail',
     name:'OrderDetail',
-    component:OrderDetail
+    component:() => import('../pages/order-detail/index')
   },
   {
     path:'/order/pay',
@@ -141,32 +118,37 @@ const routes = [
       }
     },
     name:'OrderPay',
-    component:OrderPay
+    component:() => import('../pages/order-pay/index')
   },
   {
     path:'/user/add-address',
     name:'AddAddress',
-    component:AddAddress
+    component:() => import('../pages/add-address/index')
   },
   {
     path:"/order",
     name:"Order",
-    component:Order
+    component:() => import('../pages/order/index')
   },
 	{
     path:"/user-sign",
     name:"UserSign",
-    component:UserSign
+    component:() => import('../pages/user-sign/index')
   },
   {
     path:"/user-footprient",
     name:"UserFootprient",
-    component:UserFootprient
+    component:() => import('../pages/user-footprient/index')
   },
   {
     path:"/user-collection",
     name:"UserCollection",
-    component:UserCollection
+    component:() => import('../pages/user-collection/index')
+  },
+  {
+    path:"/user-points",
+    name:"UserPoints",
+    component:() => import('../pages/user-points/index')
   },
   {
     path: "/goods-detail/:id",
@@ -184,7 +166,7 @@ const routes = [
       }
     },
     name: "GoodsDetail",
-    component:GoodsDetail
+    component:() => import('../pages/goods-detail/index')
   }
 ];
 const router = new VueRouter({
@@ -195,7 +177,6 @@ const router = new VueRouter({
   scrollBehavior(){
     return {x:0,y:0}
   }
-
 });
 //需要做验证的路由名称
 const AUTH_ROUTER_NAME = [
@@ -209,18 +190,22 @@ const AUTH_ROUTER_NAME = [
   'UserInfo',
   'UserOrder',
   'OrderDetail',
-  'UserNotice'
+  'UserNotice',
+  'UserPoints'
 ]
 //登陆验证
 router.beforeEach((to,from,next) => {
   if(AUTH_ROUTER_NAME.includes(to.name)){
     const token = Token.getToken()
     if(token === ''){
+      // console.log(to,from)
       let url;
-      if(to.query.loginRedirect !== ''){
+      // if(to.query.loginRedirect !== ''){
+      if(to.query.loginRedirect){
         url = decodeURIComponent(to.query.loginRedirect)
       }else{
-        url = encodeURIComponent(from.path)
+        // url = encodeURIComponent(from.path)
+        url = encodeURIComponent(to.path)
       }
       next(`/login?url=${url}`)
     }else{

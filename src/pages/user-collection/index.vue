@@ -1,7 +1,7 @@
 <template>
 <div class="wrapper">
   <common-header title="我的收藏" :back="backUrl"></common-header>
-  <ul class="collection-list">
+  <ul class="collection-list" v-show="collectionData.length > 0">
     <li class="collection-goods" v-for="(item,index) of collectionData" :key="item.goods_id">
       <img :src="item.goods_img"/>
       <div class="goods-info">
@@ -14,6 +14,12 @@
       </div>
     </li>
   </ul>
+  <div class="no-goods" v-show="collectionData.length === 0">
+    <img src="../../assets/images/no-goods.png" alt="">
+    <span class="text">
+      您还没有收藏任何商品哦！
+    </span>
+  </div>
 </div>
 </template>
 
@@ -137,6 +143,17 @@ export default {
           color:#999;
         }
       }
+    }
+  }
+  .no-goods{
+    width:100%;
+    height:6rem;
+    margin-top:$header-h;
+    font-size: .3rem;
+    color:#999;
+    @include layout-flex($dirction:column);
+    .text{
+      margin-top:.3rem
     }
   }
 }

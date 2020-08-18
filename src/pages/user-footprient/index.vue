@@ -3,9 +3,9 @@
   <common-header title="我的足迹" :back="backUrl"></common-header>
   <div class="time-container">
     <ul class="week-sign">
-      <li class="day-sign" v-for="(item,index) of timeList" :key="index" @click="item.active = 1">
+      <li class="day-sign" v-for="(item,index) of timeList" :key="index">
         <span class="time">{{item.week}}</span>
-        <p class="integral" :class="{todaySign:item.active === 1}">{{item.day}}</p>
+        <p class="integral" :class="{todaySign:item.active === 1}" @click="changeActive(item,index)">{{item.day}}</p>
         <p class="number" :class="{hasNum:item.number != 0}"></p>
       </li>
     </ul>
@@ -90,13 +90,27 @@ export default {
         newArr.unshift(item.reverse())
       })
       this.dayList = dayList.reverse();
-      return arr
+      return Array.from(arr)
     },
     handelTime(time){
       let year = time.slice(0,4);
       let month = time.slice(4,6);
       let day = time.slice(6,8);
       return year + '年' + month + '月' + day + '日'
+    },
+    changeActive(item,index){
+      if(item.number !== 0){
+        this.timeList.forEach(res => {
+          res.active = 0;
+        })
+        item.active = 1
+      }else{
+        this.$showToast({
+          message:'当天没有浏览任何商品哦~',
+          mask:false
+        })
+      }
+      
     }
   },
 }

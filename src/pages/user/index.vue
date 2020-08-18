@@ -42,37 +42,37 @@
   </div>
   <div class="navigate-wrapper">
     <div class="navigate">
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="$router.push('/user-notice')">
         <span class="iconfont icon">&#xe607;</span>
         <div class="navigate-text">我的消息</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="$router.push('/user-collection')">
         <span class="iconfont icon">&#xe613;</span>
-        <div class="navigate-text" @click="$router.push('/user-collection')">我的收藏</div>
+        <div class="navigate-text">我的收藏</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="$router.push('/user/address')">
         <span class="iconfont icon">&#xe622;</span>
-        <div class="navigate-text" @click="$router.push('/user/address')">我的地址</div>
+        <div class="navigate-text">我的地址</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="$router.push('/user-footprient')">
         <span class="iconfont icon">&#xe73b;</span>
-        <div class="navigate-text" @click="$router.push('/user-footprient')">我的足迹</div>
+        <div class="navigate-text">我的足迹</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="$router.push('/coupon')">
         <span class="iconfont icon">&#xe769;</span>
-        <div class="navigate-text" @click="$router.push('/coupon')">我的卡券</div>
+        <div class="navigate-text">我的卡券</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="$router.push('/user-points')">
         <span class="iconfont icon">&#xe630;</span>
         <div class="navigate-text">我的积分</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom">
+      <div class="navigate-cell border-bottom" @click="logout">
         <span class="iconfont icon">&#xe6d1;</span>
         <div class="navigate-text">退出</div>
         <span class="iconfont">&#xe62a;</span>
@@ -149,6 +149,18 @@ export default {
           this.$hideLoading()
         })
       }
+    },
+    logout(){
+      Token.deleteToken();
+      this.$showModal({
+        content:'是否要退出登录？',
+        btn:['是','否'],
+        success:res =>{
+          if(res.confirm){
+            this.$router.replace('/')
+          } 
+        }
+      })
     }
   },
 }
