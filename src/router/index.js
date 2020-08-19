@@ -45,7 +45,7 @@ const routes = [
         cname
       }
     },
-    component: () => import('../pages/category/index')
+    component: () => import('../pages/goods-list/index')
   },
   {
     path:"goods-error",
@@ -84,7 +84,7 @@ const routes = [
   {
     path:'/user/address',
     name:'UserAddress',
-    component:() => import('../pages/coupon/index')
+    component:() => import('../pages/user-address/index')
   },
   {
     path:'/user-order',
@@ -95,6 +95,11 @@ const routes = [
     path:'/user-notice',
     name:'UserNotice',
     component:() => import('../pages/user-notice/index')
+  },
+  {
+    path:'/user-coupon',
+    name:'UserCoupon',
+    component:() => import('../pages/user-coupon/index')
   },
   {
     path:'/order/address',

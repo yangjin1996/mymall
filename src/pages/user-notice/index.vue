@@ -74,7 +74,7 @@ export default {
 .page{
   width:100%;
   height:100%;
-  padding:$header-h 0 .2rem;
+  padding:1.1rem 0 .2rem;
   box-sizing: border-box;
   background:#fff;
   .new-page{

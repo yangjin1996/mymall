@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive include="" exclude="">
+    <keep-alive include="" exclude="GoodsList,UserAddress,AddAddress,Footprient,Order,Cart,UserOrder">
       <router-view />
     </keep-alive>
   </div>

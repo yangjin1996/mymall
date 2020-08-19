@@ -1,7 +1,7 @@
 <template>
 <div class="page">
   <common-header title="购物车"></common-header>
-  <div class="cart-list">
+  <div class="cart-list" v-if="cart.length > 0">
     <div v-for="item of cart" :key="item.id" :class="{'cart-delete':item.delete}" class="cart-item border-bottom" :data-goods-id="item.id" @touchstart="touchStart" @touchend="touchEnd">
       <input type="checkbox" class="checkbox" :checked="item.selected" @click="toggleSelect(item.id)">
       <img class="goods-img" :src="item.img">
@@ -18,6 +18,12 @@
       </div>
       <div class="delete" @click="deleteCart(item.id)">删除</div>
     </div>
+  </div>
+  <div class="no-goods" v-else>
+    <img src="../../assets/images/no-goods.png" alt="">
+    <span class="text">
+      购物车没有商品哦！
+    </span>
   </div>
   <div class="cart-count border-top">
     <div>
@@ -39,6 +45,7 @@ import CommonFooter from '@/components/Footer'
 import {Storage} from '@/utils/storage'
 let touchStartX = 0,touchStartTime = 0
 export default {
+  name:"Cart",
   components:{
     CommonHeader,
     CommonFooter
@@ -65,9 +72,16 @@ export default {
   },
   methods:{
     submitCart(){
-      if(this.cartNum === 0){
+      if(!this.cart){
         this.$showToast({
-          message:"至少选择一个商品"
+          message:"购物车没有商品",
+          mask:false
+        })
+        return
+      }else if(this.cartNum === 0){
+        this.$showToast({
+          message:"至少选择一个商品",
+          mask:false
         })
         return
       }
@@ -308,6 +322,21 @@ export default {
 .checkbox:checked{
   background:url(/images/checkbox@selected.png) no-repeat left bottom;
   background-size:contain;
+}
+.no-goods{
+  width:100%;
+  height:6rem;
+  margin-top:$header-h;
+  font-size: .3rem;
+  color:#999;
+  @include layout-flex($dirction:column);
+  img{
+    width:2rem;
+    height:2rem;
+  }
+  .text{
+    margin-top:.3rem
+  }
 }
 // .del-enter-active,
 // .del-leave-active{

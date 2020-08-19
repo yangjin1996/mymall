@@ -24,6 +24,7 @@
 import CommonHeader from "@/components/Header"
 import {Token} from '@/utils/token.js'
 export default {
+  name:"Footprient",
   components:{
     CommonHeader
   },

@@ -47,18 +47,14 @@ import {validate} from '@/utils/function'
 import {Token} from '@/utils/token'
 import {Storage} from '@/utils/storage'
 export default {
+  name:"AddAddress",
   components:{
     CommonHeader,
     VDistpicker
   },
-  beforeRouteEnter (to, from, next) {
-      next(vm => {
-          vm.backUrl = from.path
-      })
-  },
   data() {
     return {
-      backUrl:'',
+      backUrl:'/',
       showChooseAddress:false,
       region:[],
       name:'',
@@ -68,9 +64,13 @@ export default {
       addressId:0
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.backUrl = from.path
+    })
+  },
   mounted() {
     this.getAddress ();
-
   },
   computed:{
     regionText(){
@@ -118,7 +118,8 @@ export default {
       const res = validate(data,addressValidator)
       if(res.error !== 0){
         this.$showToast({
-          message:res.message
+          message:res.message,
+          mask:false
         })
         return
       }

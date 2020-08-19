@@ -1,35 +1,39 @@
 <template>
 <div class="page">
   <common-header title="我的地址" :back="backUrl"></common-header>
-  <ul class="address-list">
-    <li class="address-msg"  v-for="item of address" :key="item.id">
-      <div class="address">
-        <div class="name">
-          <span>{{item.name}}</span>
-          <span>{{item.phone}}</span>
+  <div class="wrap" ref="newsPage">
+    <ul class="address-list">
+      <li class="address-msg"  v-for="item of address" :key="item.id">
+        <div class="address">
+          <div class="name">
+            <span>{{item.name}}</span>
+            <span>{{item.phone}}</span>
+          </div>
+          <div class="detail">
+            {{item.province}}   {{item.city}}   {{item.area}}   {{item.addresss}}
+          </div>
         </div>
-        <div class="detail">
-          {{item.province}}   {{item.city}}   {{item.area}}   {{item.addresss}}
+        <div class="operation">
+          <div class="default">
+            <div class="bar" @click="setDefaultAddress(item.id,item.is_default)"><span class="iconfont" v-show="item.is_default === 1">&#xe62e;</span></div>
+            默认地址
+          </div>
+          <div class="delete"><span class="iconfont" @click="$router.push('/user/add-address?url=' + item.id)">&#xe888; 编辑</span><span class="iconfont del" @click="deleteAddress(item.id)">&#xe632; 删除</span></div>
         </div>
-      </div>
-      <div class="operation">
-        <div class="default">
-          <div class="bar" @click="setDefaultAddress(item.id,item.is_default)"><span class="iconfont" v-show="item.is_default === 1">&#xe62e;</span></div>
-           默认地址
-        </div>
-        <div class="delete"><span class="iconfont" @click="$router.push('/user/add-address?url=' + item.id)">&#xe888; 编辑</span><span class="iconfont del" @click="deleteAddress(item.id)">&#xe632; 删除</span></div>
-      </div>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
   <div class="add-address" v-if="showAddAddress" @click="$router.push(`/user/add-address?url=${backUrl}`)">添加新地址</div>
 </div>
 </template>
 
 <script>
+import BScroll from 'better-scroll'
 import CommonHeader from '@/components/Header'
 import {Token} from '@/utils/token'
 const MAX_ADDRESS_NUM = 10
 export default {
+  name:"UserAddress",
   components:{
     CommonHeader
   },
@@ -47,9 +51,10 @@ export default {
       showAddAddress:true
     }
   },
-  mounted() {
+  async mounted() {
     this.$showLoading();
-    this.getUserAddress();
+    await this.getUserAddress();
+    await this.initScroll();
     this.$hideLoading();
   },
   methods: {
@@ -119,6 +124,16 @@ export default {
           }
         }
       })
+    },
+    initScroll(){
+      const html = document.querySelector('html')
+      const fontSize = window.innerWidth / 7.5
+      html.style.fontSize = fontSize + 'px'
+      this.$refs.newsPage.style.height = window.innerHeight - fontSize*1.8 + 'px'
+      new BScroll('.wrap',{
+        scrollY: true,
+        click: true,
+      })
     }
   },
 }
@@ -131,9 +146,14 @@ export default {
   height:100%;
   padding-top: .9rem;
   box-sizing: border-box;
-  background:#fff;
+  background:#eee;
+  .wrap{
+    width:100%;
+    overflow: hidden;
+  }
   .address-list{
     width:100%;
+    margin-bottom: .2rem;
     padding-bottom: .01rem;
     background-color: #eee;
     transition: height 1s;

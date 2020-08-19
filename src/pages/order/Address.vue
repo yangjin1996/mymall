@@ -17,7 +17,7 @@
 <script>
 export default {
   props:{
-    address:Object
+    address:Object,
   },
   computed:{
     showAddress(){
@@ -88,16 +88,16 @@ export default {
           color:$color-e;
           margin-left:.2rem;
         }
-        .address-content{
-          font-size: .24rem;
-          color:$color-d;
-          display: -webkit-box;
-          -webkit-box-orient:vertical;
-          -webkit-line-clamp:2;
-          line-height: 14px;
-          overflow: hidden;
-          text-overflow:ellipsis;
-        }
+      }
+      .address-content{
+        font-size: .24rem;
+        color:$color-d;
+        line-height: .35rem;
+        display: -webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+        overflow: hidden;
+        text-overflow:ellipsis;
       }
     }
   }

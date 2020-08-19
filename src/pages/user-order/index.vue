@@ -28,7 +28,10 @@
           <span class="order-status">{{handelStatus(order.status)}}</span>
         </p>
       </li>
-      <li class="order-cell" v-for="(item,index) of order.goods" :key="index">
+      <li class="order-cell" 
+        v-for="(item,index) of order.goods" 
+        :key="index" 
+        @click.stop="$router.push('/order-detail?id=' + order.id)">
         <div class="order-info">
           <img class="img" :src="item.goods_img">
           <div class="goods-title-price">
@@ -42,7 +45,7 @@
         </div>
       </li>
       <li>
-        <span class="to-order" @click.stop="$router.push('/order-detail?id=' + order.id)">查看订单</span>
+        <span class="to-order" @click="operateOrder(order)">{{operationList[order.status-1]}}</span>
       </li>
     </ul>
   </div>
@@ -56,6 +59,7 @@
 import CommonHeader from '@/components/Header'
 import {Token} from '@/utils/token'
 export default {
+  name:"UserOrder",
   components:{
     CommonHeader
   },
@@ -66,7 +70,8 @@ export default {
       count:8,
       status:-1,
       total:0,
-      userOrder:[]
+      userOrder:[],
+      operationList:['去付款','提醒发货','确认收货','退换']
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -110,6 +115,32 @@ export default {
       }
       if(status === 4){
         return '已完成'
+      }
+    },
+    async operateOrder(order){
+      if(order.status===3){
+        const token = Token.getToken();
+        this.$showLoading();
+        await this.axios.post('api/user/confirmOrder',{
+          headers:{
+            token
+          },
+          params:{
+            id:order.id
+          }
+        }).then(res => {
+          console.log(res)
+        }).catch(err => {
+          console.log(err)
+        }).finally(() => {
+          this.$hideLoading()
+        })
+      }else if(order.status===2){
+        this.$showToast({
+          message:'已提醒商家发货'
+        })
+      }else if(order.status===1){
+        this.$router.replace('/order/pay?id=' + order.id)
       }
     }
   },

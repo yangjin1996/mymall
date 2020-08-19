@@ -27,6 +27,7 @@ import infiniteScroll from 'vue-infinite-scroll'
 import CommonHeader from '@/components/Header'
 import List from './List'
 export default {
+  name:"GoodsList",
   directives: {infiniteScroll},
   props:{
     cid:Number,

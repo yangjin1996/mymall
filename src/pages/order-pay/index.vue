@@ -1,10 +1,10 @@
 <template>
 <div class="page" v-if="show">
-  <common-header title="订单支付"></common-header>
+  <common-header title="订单支付" :back="'/'"></common-header>
   <div class="order-status">
     <span class="iconfont">&#xe612;</span>
     <span>买家{{order.statusInfo}}</span>
-    <span>您的包裹已蓄势待发~</span>
+    <span>{{showText}}~</span>
   </div>
   <div class="order-total">
     实付款：<span>￥{{order.orderTotal}}</span>
@@ -35,7 +35,7 @@
     </div>
     <div class="row">
       <span>收货地址：</span>
-      <p>{{order.address.province}}{{order.address.city}}{{order.address.area}}{{order.address.address}}</p>
+      <p class="address">{{order.address.province}}{{order.address.city}}{{order.address.area}}{{order.address.address}}</p>
     </div>
   </div>
   <div class="chose-pay" v-if="order.status <= 1">
@@ -67,7 +67,8 @@ export default {
       orderId:0,
       order:{},
       payType:1,
-      showGoods:false
+      showGoods:false,
+      showText:''
     }
   },
   mounted(){
@@ -93,8 +94,20 @@ export default {
       }).then(res => res.order)
       order.statusInfo = getOrderStatus(order.status)
       order.orderTotal = formatPrice(order.total_price)
-      this.order = order
+      this.order = order;
+      this.showText = this.handelShowText();
       this.$hideLoading();
+    },
+    handelShowText(){
+      if(this.order.status === 1){
+        return '您的订单未支付'
+      }
+      if(this.order.status === 2){
+        return '您的包裹已蓄势待发'
+      }
+      if(this.order.status === 3){
+        return '您的订单已完成'
+      }
     }
   },
 }
@@ -147,6 +160,9 @@ export default {
       width:0;
       flex:1;
       height:100%;
+      &.address{
+        line-height: .35rem;
+      }
     }
   }
 }

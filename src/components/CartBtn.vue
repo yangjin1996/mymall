@@ -80,7 +80,7 @@ export default {
     justify-content: center;
     align-items: center;
     position: absolute;
-    right:0;
+    right:.1rem;
     bottom: .1rem;
 }
 </style>

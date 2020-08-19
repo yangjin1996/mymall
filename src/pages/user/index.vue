@@ -8,8 +8,8 @@
         <input type="file" @change="chooseAvatr" accept="image/*">
       </div>
       <div class="user">
-        <div class="nickname" @click="$router.push('/user/info')">{{user.nickname}}<span class="level">lv{{user.level}}</span></div>
-        <div class="user-points">积分：<span class="points">{{user.points}}</span></div>
+        <div class="nickname">{{user.nickname}}<span class="level">lv{{user.level}}</span></div>
+        <div class="user-points" @click="$router.push('/user-points')">积分：<span class="points">{{user.points}}</span></div>
       </div>
       <div class="user-sign iconfont" @click="$router.push('/user-sign')">&#xe8a1; 签到</div>
     </div>
@@ -62,7 +62,7 @@
         <div class="navigate-text">我的足迹</div>
         <span class="iconfont">&#xe62a;</span>
       </div>
-      <div class="navigate-cell border-bottom" @click="$router.push('/coupon')">
+      <div class="navigate-cell border-bottom" @click="$router.push('/user-coupon')">
         <span class="iconfont icon">&#xe769;</span>
         <div class="navigate-text">我的卡券</div>
         <span class="iconfont">&#xe62a;</span>

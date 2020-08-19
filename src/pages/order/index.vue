@@ -1,7 +1,7 @@
 <template>
 <div class="page">
   <common-header title="确认订单" back="/cart"></common-header>
-  <order-address :address="address"></order-address>
+  <order-address :address="address" :data="datas"></order-address>
   <div class="cart-container">
     <div class="cart-item" v-for="item of cart" :key="item.id">
       <img :src="item.img" class="cart-img"/>
@@ -38,6 +38,7 @@ import {Token} from "@/utils/token"
 import {Storage} from "@/utils/storage"
 const USER_TOKEN =Token.getToken()
 export default {
+  name:"Order",
   components:{
     CommonHeader,
     OrderAddress
@@ -59,7 +60,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if(from.name === 'Cart'){
+      if(from.name === 'Cart' || 'OrderAddress'){
         vm.fromPath = 'Cart'
       }else if(from.name === 'GoodsDetail'){
         vm.fromPath = 'GoodsDstail'
@@ -165,6 +166,7 @@ export default {
         this.coupon = userCoupon.filter(item => item.is_use === 0 && item.expires_time*1000 > Date.now())
         return
       }
+      this.$showLoading();
       const coupon = await this.axios.get('shose/coupon/get',{
         headers:{
           token:USER_TOKEN
@@ -175,6 +177,7 @@ export default {
       }))
       this.coupon = coupon.filter(item => item.is_use === 0 && item.expires_time*1000 > Date.now())
       Storage.setItem('userCoupon',this.coupon)
+      this.$hideLoading()
     },
     async submitOrder(){
       const token = Token.getToken()

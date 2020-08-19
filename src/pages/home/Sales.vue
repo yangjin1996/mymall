@@ -87,10 +87,13 @@ export default {
                 height:2.66rem;
             }
             .goods-info{
+                width:100%;
                 height:0;
+                padding-left: .1rem;
                 flex:1;
                 margin:.1rem 0 .2rem .1rem;
                 @include layout-flex(column,space-between,flex-start);
+                box-sizing: border-box;
                 .val-name{
                     width:90%;
                     height:.3rem;
@@ -99,6 +102,7 @@ export default {
                     color:$color-d;
                     overflow:hidden;
                     text-overflow:ellipsis;
+                    white-space: nowrap;
                     font-weight:600;
                 }
                 .val-price{
