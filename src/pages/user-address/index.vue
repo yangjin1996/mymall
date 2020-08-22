@@ -133,6 +133,7 @@ export default {
       new BScroll('.wrap',{
         scrollY: true,
         click: true,
+        probeType: 3,
       })
     }
   },

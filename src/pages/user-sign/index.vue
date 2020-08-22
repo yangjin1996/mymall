@@ -124,7 +124,11 @@ export default {
           color:#fff;
         }
         &.todaySign{
-          color:#fff;
+          color:#999;
+          &.sign{
+            background-color: $color-a;
+            color:#fff;
+          }
         }
       }
     }

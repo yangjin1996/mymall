@@ -194,6 +194,7 @@ const AUTH_ROUTER_NAME = [
   'AddAddress',
   'UserInfo',
   'UserOrder',
+  'UserFootprient',
   'OrderDetail',
   'UserNotice',
   'UserPoints'

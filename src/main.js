@@ -1,5 +1,6 @@
 import Vue from "vue";
 import axios from "axios";
+import BScroll from 'better-scroll';
 import VueAxios from "vue-axios";
 import VueLazyload from "vue-lazyload"
 import App from "./App.vue";
@@ -13,6 +14,7 @@ axios.defaults.baseURL = '/api/';
 axios.defaults.timeout = 10000;
 axios.defaults.headers.appkey = 'f68bSYqte0m6EibwhARrzTcYDPoV0FobCi06uDfM3eF4QGQQKSywmd71ytM';
 Vue.use(VueAxios,axios);
+Vue.prototype.$BScroll = BScroll;
 //图片懒加载
 Vue.use(VueLazyload,{
   loading:'/images/loading-svg/loading-bubbles.svg'

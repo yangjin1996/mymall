@@ -20,34 +20,36 @@
       </li>
     </ul>
   </div>
-  <div class="wrap-container" v-show="userOrder.length">
-    <ul class="order-list" v-for="order of userOrder" :key="order.id">
-      <li class="order-h">
-        <p class="order-headers">
-          <span class="order-num">订单编号：{{order.order_no}}</span>
-          <span class="order-status">{{handelStatus(order.status)}}</span>
-        </p>
-      </li>
-      <li class="order-cell" 
-        v-for="(item,index) of order.goods" 
-        :key="index" 
-        @click.stop="$router.push('/order-detail?id=' + order.id)">
-        <div class="order-info">
-          <img class="img" :src="item.goods_img">
-          <div class="goods-title-price">
-            <span class="goods-title">{{item.goods_name}}</span>
-            <span class="goods-price">￥{{item.goods_price}}</span>
+  <div class="wrapper-container" ref="container">
+    <div class="wrap-container" v-show="userOrder.length">
+      <ul class="order-list" v-for="order of userOrder" :key="order.id">
+        <li class="order-h">
+          <p class="order-headers">
+            <span class="order-num">订单编号：{{order.order_no}}</span>
+            <span class="order-status">{{order.status|handelStatus}}</span>
+          </p>
+        </li>
+        <li class="order-cell" 
+          v-for="(item,index) of order.goods" 
+          :key="index" 
+          @click.stop="$router.push('/order-detail?id=' + order.id)">
+          <div class="order-info">
+            <img class="img" :src="item.goods_img">
+            <div class="goods-title-price">
+              <span class="goods-title">{{item.goods_name}}</span>
+              <span class="goods-price">￥{{item.goods_price}}</span>
+            </div>
+            <div class="goods-count">
+              <span class="buy-number">X{{item.buy_number}}</span>
+              <span></span>
+            </div>
           </div>
-          <div class="goods-count">
-            <span class="buy-number">X{{item.buy_number}}</span>
-            <span></span>
-          </div>
-        </div>
-      </li>
-      <li>
-        <span class="to-order" @click="operateOrder(order)">{{operationList[order.status-1]}}</span>
-      </li>
-    </ul>
+        </li>
+        <li>
+          <span class="to-order" @click="operateOrder(order)">{{operationList[order.status-1]}}</span>
+        </li>
+      </ul>
+    </div>
   </div>
   <div class="not-order" v-show="!userOrder.length">
     没有查询到订单
@@ -71,6 +73,7 @@ export default {
       status:-1,
       total:0,
       userOrder:[],
+      scroll:null,
       operationList:['去付款','提醒发货','确认收货','退换']
     }
   },
@@ -81,9 +84,49 @@ export default {
     })
   },
   mounted() {
-    this.getUserOrder()
+    this.getUserOrder();
+    this.getBscrollBoxHeight();
+    this.initScroll();
+  },
+  filters:{
+    handelStatus(status){
+      if(status === 1){
+        return '待付款'
+      }
+      if(status === 2){
+        return '待发货'
+      }
+      if(status === 3){
+        return '待收货'
+      }
+      if(status === 4){
+        return '已完成'
+      }
+    }
   },
   methods: {
+    initScroll(){
+      this.scroll = new this.$BScroll('.wrapper-container',{
+        scrollY: true,
+        click: true,
+        probeType: 3,
+        pullDownRefresh:{
+          threshold: -10, // 在上拉到超过底部 20px 时，触发 pullingUp 事件
+          stop: 0
+        },
+        pullUpLoad: {
+          threshold: 50, 
+        },
+      });
+    },
+    getBscrollBoxHeight(){
+      let bodyHeight = window.innerHeight;
+      const html = document.querySelector('html');
+      let WindowHeight = bodyHeight / parseFloat(html.style.fontSize);
+      let BscBoxHeight = WindowHeight - 1.7 + 'rem';
+      this.$refs.container.style.height = BscBoxHeight;
+      console.log(bodyHeight,WindowHeight,BscBoxHeight)
+    },
     async getUserOrder(status = -1){
       status = status || this.$route.query.status || this.status;
       const token = Token.getToken();
@@ -103,37 +146,16 @@ export default {
       this.total = userOrder.total;
       this.$hideLoading();
     },
-    handelStatus(status){
-      if(status === 1){
-        return '待付款'
-      }
-      if(status === 2){
-        return '待发货'
-      }
-      if(status === 3){
-        return '待收货'
-      }
-      if(status === 4){
-        return '已完成'
-      }
-    },
     async operateOrder(order){
       if(order.status===3){
-        const token = Token.getToken();
-        this.$showLoading();
-        await this.axios.post('api/user/confirmOrder',{
-          headers:{
-            token
-          },
-          params:{
-            id:order.id
+        this.$showModal({
+          content:'是否确认收货？',
+          btn:['是','否'],
+          success:res =>{
+            if(res.confirm){
+              this.confirmReceive(order)
+            } 
           }
-        }).then(res => {
-          console.log(res)
-        }).catch(err => {
-          console.log(err)
-        }).finally(() => {
-          this.$hideLoading()
         })
       }else if(order.status===2){
         this.$showToast({
@@ -142,6 +164,28 @@ export default {
       }else if(order.status===1){
         this.$router.replace('/order/pay?id=' + order.id)
       }
+    },
+    async confirmReceive(order){
+      const token = Token.getToken();
+      this.$showLoading();
+      await this.axios.post('api/user/orderConfirm',{id:order.id},{
+        headers:{
+          token
+        }
+      }).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        this.$hideLoading()
+      })
+    },
+    deleteData(id){
+      let idList = this.finishedData.map(res => {
+        return res.id
+      })
+      let index = idList.indexOf(id);
+      this.finishedData.splice(index,1)
     }
   },
 }
@@ -172,6 +216,10 @@ export default {
         }
       }
     }
+  }
+  .wrapper-container{
+    width:100%;
+    overflow: hidden;
   }
   .wrap-container{
     width:100%;

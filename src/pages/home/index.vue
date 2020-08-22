@@ -2,6 +2,7 @@
     <div class="page" ref="page">
         <common-header></common-header>
         <search-bar></search-bar>
+        <!-- <div class="wrapper-container" ref="container"> -->
         <div class="wrapper">
             <home-swiper :swiperList="swiperList"></home-swiper>
             <icon-nav :navList="navList"></icon-nav>
@@ -12,6 +13,7 @@
                 <goods-list :goodsList="goodsList"></goods-list>
             </div>
         </div>
+        <!-- </div>     -->
         <common-footer></common-footer>
     </div>
 </template>
@@ -40,7 +42,8 @@ export default {
         Sales,
         NewGoods,
         GoodsList,
-        CommonFooter
+        CommonFooter,
+        scroll:null
     },
     data(){
         return{
@@ -61,12 +64,14 @@ export default {
         const footerHeight = document.querySelector(".footer-container").offsetHeight
         this.$refs.page.style.paddingBottom = footerHeight + 'px'
         this.scrollDistance = footerHeight
-        this.$showLoading()
-        await this.getSwiper()
-        await this.getIconNav()
-        await this.getRecommend()
-        await this.getSales()
-        await this.getNewGoods()
+        this.$showLoading();
+        await this.getSwiper();
+        await this.getIconNav();
+        await this.getRecommend();
+        await this.getSales();
+        await this.getNewGoods();
+        // this.getBscrollBoxHeight();
+        // this.initScroll();
         // await new BScroll('.wrapper', {
         //     scrollY: true,
         //     scrollX: false,
@@ -82,6 +87,28 @@ export default {
         this.$hideLoading()
     },
     methods: {
+        initScroll(){
+            this.scroll = new this.$BScroll('.wrapper-container',{
+                scrollY: true,
+                click: true,
+                probeType: 3,
+                pullDownRefresh:{
+                threshold: -10, // 在上拉到超过底部 20px 时，触发 pullingUp 事件
+                stop: 0
+                },
+                pullUpLoad: {
+                threshold: 50, 
+                },
+            });
+        },
+        getBscrollBoxHeight(){
+            let bodyHeight = window.innerHeight;
+            const html = document.querySelector('html');
+            let WindowHeight = bodyHeight / parseFloat(html.style.fontSize);
+            let BscBoxHeight = WindowHeight - 3.08 + 'rem';
+            this.$refs.container.style.height = BscBoxHeight;
+            console.log(bodyHeight,WindowHeight,BscBoxHeight)
+        },
         async getSwiper () {
             const swiper = Storage.getItem('swiper')
             if(swiper){
@@ -140,9 +167,11 @@ export default {
 .page{
     width:100%;
     min-height:100%;
+    // padding-top:1.78rem;
     background-color:$color-c;
-    // .wrapper{
-    //     height:10rem;
+    box-sizing: border-box;
+    // .wrapper-container{
+    //     width:100%;
     //     overflow: hidden;
     // }
     .swiper-container-ios{

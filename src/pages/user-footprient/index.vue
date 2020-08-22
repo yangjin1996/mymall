@@ -5,7 +5,7 @@
     <ul class="week-sign">
       <li class="day-sign" v-for="(item,index) of timeList" :key="index">
         <span class="time">{{item.week}}</span>
-        <p class="integral" :class="{todaySign:item.active === 1}" @click="changeActive(item,index)">{{item.day}}</p>
+        <p class="integral" :class="{todaySign:item.active === 1}" @click="changeActive(item)">{{item.day}}</p>
         <p class="number" :class="{hasNum:item.number != 0}"></p>
       </li>
     </ul>
@@ -35,6 +35,7 @@ export default {
       page:1,
       historyData:[],
       dayList:[],
+      time:0
     }
   },
   mounted(){
@@ -99,7 +100,24 @@ export default {
       let day = time.slice(6,8);
       return year + '年' + month + '月' + day + '日'
     },
-    changeActive(item,index){
+    async changeActive(item){
+      // console.log(item)
+
+      // const token = Token.getToken();
+      // this.$showLoading()
+      // this.page = 1;
+      // const changeData = await this.axios.get('shose/history/get',{
+      //   params:{
+      //     page:this.page,
+      //     time:item.time
+      //   },
+      //   headers:{
+      //     token
+      //   }
+      // });
+      // this.$hideLoading()
+      // console.log(changeData)
+
       if(item.number !== 0){
         this.timeList.forEach(res => {
           res.active = 0;
@@ -120,7 +138,6 @@ export default {
 @import '~@/assets/scss/global';
 .wraper{
   width:100%;
-  height:100vh;
   background-color: #eee !important;
   padding-top:$header-h;
   box-sizing: border-box;
@@ -166,20 +183,21 @@ export default {
   }
   .day-number{
     width:100%;
-    padding:.2rem;
+    padding:.3rem .2rem 0 .2rem;
     margin-top:.3rem;
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     position: relative;
+    background-color: #fff;
     .day-time{
       font-size: .26rem;
       color:#666;
       line-height: .43rem;
       position: absolute;
       left:.4rem;
-      top:-.1rem;
+      top:.1rem;
     }
     .day-cell{
       width:2.24rem;
@@ -189,6 +207,8 @@ export default {
       img{
         width:2.24rem;
         height:1.96rem;
+        border:1px solid #eee;
+        box-sizing: border-box;
       }
       .price{
         color:$color-a;
