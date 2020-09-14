@@ -125,7 +125,7 @@ export default {
       let WindowHeight = bodyHeight / parseFloat(html.style.fontSize);
       let BscBoxHeight = WindowHeight - 1.7 + 'rem';
       this.$refs.container.style.height = BscBoxHeight;
-      console.log(bodyHeight,WindowHeight,BscBoxHeight)
+      // console.log(bodyHeight,WindowHeight,BscBoxHeight)
     },
     async getUserOrder(status = -1){
       status = status || this.$route.query.status || this.status;
@@ -142,7 +142,11 @@ export default {
         }
       })
       this.status = status;
-      this.userOrder = userOrder.list;
+      if(this.status === 4){
+        this.userOrder = userOrder.list.reverse();
+      }else{
+        this.userOrder = userOrder.list;
+      }
       this.total = userOrder.total;
       this.$hideLoading();
     },
@@ -172,8 +176,9 @@ export default {
         headers:{
           token
         }
-      }).then(res => {
-        console.log(res)
+      }).then(() => {
+        this.deleteData(order.id)
+        console.log(order,this.userOrder)
       }).catch(err => {
         console.log(err)
       }).finally(() => {
@@ -181,11 +186,11 @@ export default {
       })
     },
     deleteData(id){
-      let idList = this.finishedData.map(res => {
+      let idList = this.userOrder.map(res => {
         return res.id
       })
       let index = idList.indexOf(id);
-      this.finishedData.splice(index,1)
+      this.userOrder.splice(index,1)
     }
   },
 }
@@ -212,6 +217,7 @@ export default {
         @include layout-flex;
         box-sizing: border-box;
         &.on{
+          color: $color-a;
           border-bottom: 2px solid $color-a;
         }
       }

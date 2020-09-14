@@ -86,6 +86,7 @@ export default {
         if(this.catId >0 || this.pid > 0){
           return
         }
+        console.log(this.catId)
         const res = await this.axios.get('api/category/cid',{params:{name:this.cname}})
         if (res.parent) {
           this.pid = res.cat_id
